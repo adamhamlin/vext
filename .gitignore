@@ -6,7 +6,7 @@ out/
 # VSCode test output
 .vscode-test/
 
-#
+# DC Cache
 .dccache
 
 ##### DEFAULT IGNORES #####
