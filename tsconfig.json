@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "es2019",
+		"lib": [
+			"es2019"
+		],
+		"outDir": "out",
+		"rootDir": "src",
+		"baseUrl": "src",
+		"typeRoots": [
+			"./src/types",
+			"./node_modules/@types"
+		],
+		"sourceMap": true,
+		"strict": true   /* enable all strict type-checking options */
+	},
+	"exclude": [
+		"src/types",
+		"node_modules",
+		".vscode-test"
+	]
+}

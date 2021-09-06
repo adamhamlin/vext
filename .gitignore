@@ -1,3 +1,16 @@
+##### ADDED IGNORES #####
+
+# Project output folder
+out/
+
+# VSCode test output
+.vscode-test/
+
+#
+.dccache
+
+##### DEFAULT IGNORES #####
+
 # Logs
 logs
 *.log
