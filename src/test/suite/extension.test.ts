@@ -1,17 +1,15 @@
 import * as assert from 'assert';
-
-// You can import and use all API from the 'vscode' module
-// as well as import your extension to test it
 import * as vscode from 'vscode';
-// import * as myExtension from '../../extension';
+import * as chai from 'chai';
+import { toggleCommentType } from '../../commands/toggleCommentType';
+import { openFile } from '../utils/test-utils';
+
+const expect = chai.expect;
 
 suite('Extension Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');
 
-	// TODO: Add real tests
-
 	test('Sample test', () => {
-		assert.strictEqual(-1, [1, 2, 3].indexOf(5));
-		assert.strictEqual(-1, [1, 2, 3].indexOf(0));
+		expect(true).to.be.true;
 	});
 });

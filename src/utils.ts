@@ -15,7 +15,7 @@ export async function handleError(fn: () => Promise<void>): Promise<void> {
             vscode.window.showWarningMessage(err.message);
         } else if (err instanceof UserError) {
             vscode.window.showErrorMessage(err.message);
-        } else {
+        } else if (err instanceof Error) {
             vscode.window.showErrorMessage(`Unexpected error: ${err.message}\n${err.stack}`);
         }
     }
