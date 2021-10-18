@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { UserError } from '../utils';
+import { UserWarning } from '../utils';
 
 export enum DependencyExtension {
     VS_CODE_INTERNAL = 'vsCodeInternal',
@@ -47,13 +47,14 @@ async function ensureExtensionActivated(extensionName: DependencyExtension, expl
         const extension = vscode.extensions.getExtension(extensionId);
         try {
             if (!extension) {
-                throw new UserError(`Extension '${extensionId}' not found!`);
+                throw new Error(`Extension '${extensionId}' not found!`);
             }
             await extension.activate();
             activatedExtensions.add(extensionName);
-        } catch (err) {
-            const msgPrefix = `Extension '${extensionName}' (${extensionId}) is reqiured ${explanation}`.trimEnd();
-            throw new UserError(`${msgPrefix}. Please ensure it has been properly installed/enabled: ${err.message}`);
+        } catch (e) {
+            const err = e as Error;
+            const msgPrefix = `Extension '${extensionName}' (${extensionId}) is required ${explanation}`.trimEnd();
+            throw new UserWarning(`${msgPrefix}. Please ensure it has been properly installed/enabled: ${err.message}`);
         }
     }
 }

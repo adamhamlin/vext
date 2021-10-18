@@ -12,7 +12,7 @@ Optionally, you may configure `TextToggler` to auto-format the selection when to
 
 This extension contributes the following settings:
 
-* `text-toggler.autoFormatOnToggleCommentType`: Enable/disable auto-format (with `Rewrap`) when toggling comment type. Defaults to false.
+* `text-toggler.autoFormatOnToggleCommentType`: Enable/disable auto-format (using `Rewrap`) when toggling comment type. Defaults to false.
 
 ## Known Issues
 

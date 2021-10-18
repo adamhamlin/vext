@@ -3,7 +3,8 @@
 # Project output folder
 out/
 
-# VSCode test output
+# VSCode
+launch.json
 .vscode-test/
 
 # DC Cache
