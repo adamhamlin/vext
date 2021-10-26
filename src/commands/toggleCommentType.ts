@@ -16,7 +16,7 @@ export const TOGGLE_COMMENT_TYPE_CMD = 'toggleCommentType';
  * @param editor the vscode TextEditor object
  * @param editorEdit the vscode TextEditorEdit object (unused)
  */
-export async function toggleCommentType(editor: vscode.TextEditor, _editorEdit: vscode.TextEditorEdit): Promise<void> {
+export async function toggleCommentType(editor: vscode.TextEditor): Promise<void> {
     await handleError(async () => {
         const comment = await Comment.parseCommentFromSelection(editor);
         const availableCommentTypes = comment.getAvailableCommentTypes();
