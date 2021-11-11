@@ -1,6 +1,6 @@
 {
-	"name": "text-toggler",
-	"displayName": "text-toggler",
+	"name": "text-toggle",
+	"displayName": "text-toggle",
 	"publisher": "adamhamlin",
 	"description": "A utility for toggling features of text snippets",
 	"version": "0.0.1",
@@ -14,21 +14,21 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "text-toggler.toggleCommentType",
+				"command": "text-toggle.toggleCommentType",
 				"title": "Toggle Comment Type"
 			}
 		],
 		"keybindings": [
 			{
-				"command": "text-toggler.toggleCommentType",
+				"command": "text-toggle.toggleCommentType",
 				"key": "ctrl+alt+t",
 				"mac": "cmd+alt+t"
 			}
 		],
 		"configuration": {
-			"title": "TextToggler",
+			"title": "TextToggle",
 			"properties": {
-				"text-toggler.autoFormatOnToggleCommentType": {
+				"text-toggle.autoFormatOnToggleCommentType": {
 					"type": "boolean",
 					"default": false,
 					"description": "When enabled, automatically format the selection when toggling comment type. NOTE: Requires the `Rewrap` extension to be installed."
@@ -37,7 +37,7 @@
 		}
 	},
 	"activationEvents": [
-		"onCommand:text-toggler.toggleCommentType"
+		"onCommand:text-toggle.toggleCommentType"
 	],
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

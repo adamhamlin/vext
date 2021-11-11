@@ -15,7 +15,7 @@ export type CommentConfig = {
 export const AUTO_FORMAT_ON_TOGGLE = 'autoFormatOnToggleCommentType';
 
 /**
- * Get the text-toggler configuration setting for the specified key.
+ * Get the TextToggle configuration setting for the specified key.
  */
 export function getConfig<T>(key: string): T {
     const configValue: T | undefined = vscode.workspace.getConfiguration(EXTENSION_NAME).get(key);
