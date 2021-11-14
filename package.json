@@ -1,9 +1,9 @@
 {
 	"name": "vext",
 	"displayName": "vext",
-	"publisher": "adamhamlin",
+	"publisher": "FourOrFive",
 	"description": "A utility for toggling features of text snippets",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"engines": {
 		"vscode": "^1.57.0"
 	},
