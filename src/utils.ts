@@ -47,7 +47,7 @@ export function getCurrentLang(): string {
  *
  * NOTE: Assumes all elements are unique.
  */
- export function getNextElement<T>(arr: T[], currentValue: T): T {
+export function getNextElement<T>(arr: T[], currentValue: T): T {
     const currentIdx = arr.indexOf(currentValue);
     const newIdx = (currentIdx + 1) % arr.length;
     return arr[newIdx];
