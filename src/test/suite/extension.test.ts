@@ -103,14 +103,17 @@ describe('Extension Test Suite', () => {
         });
 
         it('unspecified language -- assume java-style', async () => {
+            // We'll also test blank lines in middle of text
             const editor = await openEditorWithContentAndSelectAll(undefined, dedent`
                 First line
+
                 Second line
                 Third line
             `);
             await toggleCommentType(editor);
             expect(editor.document.getText(editor.selection)).to.equal(dedent`
                 // First line
+                //
                 // Second line
                 // Third line
             `);
@@ -118,6 +121,7 @@ describe('Extension Test Suite', () => {
             expect(editor.document.getText(editor.selection)).to.equal(dedent`
                 /**
                  * First line
+                 *
                  * Second line
                  * Third line
                  */
@@ -125,6 +129,7 @@ describe('Extension Test Suite', () => {
             await toggleCommentType(editor);
             expect(editor.document.getText(editor.selection)).to.equal(dedent`
                 First line
+
                 Second line
                 Third line
             `);

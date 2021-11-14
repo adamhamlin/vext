@@ -81,17 +81,7 @@ export class Comment {
         const selectionText: string = editor.document.getText(selection);
         const indentation = new Indentation(selectionText, selection);
         const commentConfig = await getCommentConfigForLanguage();
-        const extractOptions = {
-            pattern: {
-                singleLineComment: [{ start: commentConfig.line }],
-                multiLineComment: (commentConfig.blockStart) ? [{
-                    start: commentConfig.blockStart.trim(),
-                    middle: commentConfig.blockMiddle.trim(),
-                    end: commentConfig.blockEnd.trim()
-                }] : undefined
-            }
-        };
-        const extracted = _.values(extractComments(selectionText, extractOptions));
+        const extracted = this.extractCommentsHelper(selectionText, commentConfig);
 
         if (extracted.length === 1) {
             // Found a single block or line comment
@@ -120,6 +110,37 @@ export class Comment {
                 indentation,
                 commentConfig
             );
+        }
+    }
+
+    private static extractCommentsHelper(selectionText: string, commentConfig: CommentConfig) {
+        const extractOptions = {
+            pattern: {
+                singleLineComment: [{ start: commentConfig.line }],
+                multiLineComment: (commentConfig.blockStart) ? [{
+                    start: commentConfig.blockStart.trim(),
+                    middle: commentConfig.blockMiddle.trim(),
+                    end: commentConfig.blockEnd.trim()
+                }] : undefined
+            }
+        };
+        const extracted = _.values(extractComments(selectionText, extractOptions));
+
+        // Special case for a group of line comments that has one more more lines with no content: This will appear as multiple comments,
+        // but we want to consider it one big comment
+        const lineComment = commentConfig.line.trim();
+        const emptyLineCommentRegex = new RegExp(`${lineComment}\\s*(\\n${lineComment}\\s*)*`);
+        const isSpecialCase = extracted.length >= 2 && _.take(extracted, extracted.length - 1).every(el => {
+            return el.info.type === CommentType.LINE_COMMENT && el.code.match(emptyLineCommentRegex);
+        });
+        if (isSpecialCase) {
+            const res = _.tail(extracted).reduce((accumulator, el) => {
+                accumulator.content += '\n' + el.content;
+                return accumulator;
+            }, extracted[0]);
+            return [res];
+        } else {
+            return extracted;
         }
     }
  }
