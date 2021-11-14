@@ -4,7 +4,7 @@ Simple VS Code Extension to toggle text features! With `vext` you can:
 - Toggle a selection between a block comment, a line comment, and uncommented text
 - Toggle a quoted string between `"`, `'`, and ``` ` ```
 
-_TODO: Add video_
+![Demo](resources/demo.gif)
 
 ## Dependencies
 

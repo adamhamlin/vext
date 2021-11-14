@@ -1,6 +1,7 @@
 {
 	"name": "vext",
 	"displayName": "vext",
+	"icon": "resources/vext-icon.png",
 	"publisher": "FourOrFive",
 	"description": "A utility for toggling features of text snippets",
 	"version": "0.1.0",
