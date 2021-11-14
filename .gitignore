@@ -1,10 +1,10 @@
 ##### ADDED IGNORES #####
 
-# Project output folder
+# Project
 out/
+scratch/
 
 # VSCode
-launch.json
 .vscode-test/
 
 # DC Cache

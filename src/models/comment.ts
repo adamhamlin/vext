@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { last, values } from 'lodash';
+import * as _ from 'lodash';
 import { CommentConfig, getCommentConfigForLanguage } from '../configuration';
 import extractComments = require('multilang-extract-comments'); // can't get this to work with nicer syntax :(
 
@@ -91,14 +91,14 @@ export class Comment {
                 }] : undefined
             }
         };
-        const extracted = values(extractComments(selectionText, extractOptions));
+        const extracted = _.values(extractComments(selectionText, extractOptions));
 
         if (extracted.length === 1) {
             // Found a single block or line comment
             let lines = extracted[0].content.split('\n');
             const commentType = extracted[0].info.type;
             // Formatted multiline block comments will always have a trailing empty line
-            if (commentType === CommentType.BLOCK_COMMENT && last(lines)?.match(/^\s*$/)) {
+            if (commentType === CommentType.BLOCK_COMMENT && _.last(lines)?.match(/^\s*$/)) {
                 lines = lines.slice(0, -1);
             }
             return new Comment(

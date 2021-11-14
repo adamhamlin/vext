@@ -1,0 +1,8 @@
+{
+    "vext.quoteChars": [
+        "\"",
+        "'",
+        "`"
+    ],
+    "vext.autoFormatOnToggleCommentType": false
+}
