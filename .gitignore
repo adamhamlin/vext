@@ -6,6 +6,7 @@ scratch/
 
 # VSCode
 .vscode-test/
+src/.vscode/
 
 # DC Cache
 .dccache
