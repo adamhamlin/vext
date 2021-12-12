@@ -14,6 +14,7 @@ export type CommentConfig = {
 // Supported configuration properties
 export const AUTO_FORMAT_ON_COMMENT_TOGGLE = 'autoFormatOnToggleCommentType';
 export const QUOTE_CHARS = 'quoteChars';
+export const CASE_EXTRA_WORD_CHARS = 'caseExtraWordChars';
 
 /**
  * Get the Vext configuration setting for the specified key.

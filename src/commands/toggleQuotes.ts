@@ -60,8 +60,8 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
             const matches = getQuotedStrings(lineText, quoteChars);
             const cursorPosition = selection.active.character;
             const cursorMatch = matches.find(match => {
-                // Cursor must be anywhere within the quote or immediately before first quote
-                return cursorPosition >= match.start && cursorPosition < match.end;
+                // Cursor must be anywhere within the quote or immediately before/after
+                return cursorPosition >= match.start && cursorPosition <= match.end;
             });
             if (!cursorMatch) {
                 throw new UserError('Cursor must be located within a properly-quoted string! If a backtick string, it cannot contain templating.');

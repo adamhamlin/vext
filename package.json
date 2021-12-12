@@ -25,6 +25,10 @@
 			{
 				"command": "vext.toggleQuotes",
 				"title": "Toggle Quote Characters"
+			},
+			{
+				"command": "vext.toggleCase",
+				"title": "Toggle Text Casing"
 			}
 		],
 		"keybindings": [
@@ -37,6 +41,11 @@
 				"command": "vext.toggleQuotes",
 				"key": "ctrl+'",
 				"mac": "cmd+'"
+			},
+			{
+				"command": "vext.toggleCase",
+				"key": "ctrl+alt+a",
+				"mac": "cmd+alt+a"
 			}
 		],
 		"configuration": {
@@ -55,13 +64,35 @@
 						"`"
 					],
 					"description": "The quote characters to toggle between."
+				},
+				"vext.caseExtraWordChars": {
+					"type": "array",
+					"default": [
+						"-",
+						"+",
+						".",
+						"/",
+						":",
+						"\"",
+						"'",
+						",",
+						"|",
+						"@",
+						"$",
+						"?",
+						"=",
+						"&",
+						"#"
+					],
+					"description": "Additional characters that will be considered a part of \\w when parsing words to toggle case. For example, if '-' is specified, then 'super-secret' would be considered a single word."
 				}
 			}
 		}
 	},
 	"activationEvents": [
 		"onCommand:vext.toggleCommentType",
-		"onCommand:vext.toggleQuotes"
+		"onCommand:vext.toggleQuotes",
+		"onCommand:vext.toggleCase"
 	],
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
@@ -92,7 +123,8 @@
 		"chai-as-promised": "^7.1.1",
 		"dedent": "0.7.0",
 		"eslint": "7.27.0",
-		"glob": "7.1.7",
+		"glob": "^7.1.7",
+		"glob-promise": "^4.2.2",
 		"mocha": "8.4.0",
 		"vscode-test": "1.5.2"
 	}
