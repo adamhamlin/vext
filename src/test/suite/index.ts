@@ -1,37 +1,33 @@
 import * as path from 'path';
 import * as Mocha from 'mocha';
-import * as glob from 'glob';
+import * as glob from 'glob-promise';
 
-export function run(): Promise<void> {
-	// Create the mocha test
+
+/**
+ * NOTE: Be sure to run tests with --disable-extensions flag set
+ */
+
+export async function run(): Promise<void> {
+	// Create the mocha instance
 	const mocha = new Mocha({
 		ui: 'bdd',
 		color: true
 	});
 
 	const testsRoot = path.resolve(__dirname, '..');
+	// Mocha needs to run on the transpiled .js files, not .ts
+	const files = await glob('**/**.spec.js', { cwd: testsRoot });
 
-	return new Promise((c, e) => {
-		glob('**/**.test.js', { cwd: testsRoot }, (err, files) => {
-			if (err) {
-				return e(err);
-			}
+	// Add files to the test suite
+	files.forEach(f => mocha.addFile(path.resolve(testsRoot, f)));
 
-			// Add files to the test suite
-			files.forEach(f => mocha.addFile(path.resolve(testsRoot, f)));
-
-			try {
-				// Run the mocha test
-				mocha.run(failures => {
-					if (failures > 0) {
-						e(new Error(`${failures} tests failed.`));
-					} else {
-						c();
-					}
-				});
-			} catch (err) {
-				console.error(err);
-				e(err);
+	// Run the tests
+	await new Promise((resolve, reject) => {
+		mocha.run(failures => {
+			if (failures > 0) {
+				reject(new Error(`${failures} tests failed.`));
+			} else {
+				resolve(null);
 			}
 		});
 	});

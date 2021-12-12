@@ -4,5 +4,22 @@
         "'",
         "`"
     ],
-    "vext.autoFormatOnToggleCommentType": false
+    "vext.autoFormatOnToggleCommentType": false,
+    "vext.caseExtraWordChars": [
+        "-",
+        "+",
+        ".",
+        "/",
+        ":",
+        "\"",
+        "'",
+        ",",
+        "|",
+        "@",
+        "$",
+        "?",
+        "=",
+        "&",
+        "#"
+    ]
 }
