@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { getNextElement, handleError, UserError } from '../utils';
 import { getConfig, QUOTE_CHARS } from '../configuration';
 import * as _ from 'lodash';
+import { Match } from 'types';
 
 export const TOGGLE_QUOTES_CMD = 'toggleQuotes';
 
@@ -22,9 +23,7 @@ const QUOTE_REGEX_TEMPLATE = `(?<!\\\\)([${QUOTE_CHARS_PLACEHOLDER}])(?:[^\\1\\\
 const BACKTICK_QUOTE_REGEX = '(?<!\\\\)`(?:[^`\\\\{]|\\\\.|(?<!\\$)\\{)*?`';
 
 type Char = string;
-type QuoteMatch = {
-    start: number;
-    end: number;
+type QuoteMatch = Match & {
     quoteChar: Char;
     innerText: string;
 };

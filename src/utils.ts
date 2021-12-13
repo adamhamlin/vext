@@ -1,3 +1,4 @@
+import { Match } from 'types';
 import * as vscode from 'vscode';
 
 // Some error types used to drive user messages (see handleError below)
@@ -51,4 +52,53 @@ export function getNextElement<T>(arr: T[], currentValue: T): T {
     const currentIdx = arr.indexOf(currentValue);
     const newIdx = (currentIdx + 1) % arr.length;
     return arr[newIdx];
+}
+
+/**
+ * Get the selection corresponding to the word where the cursor is currently positioned. Throws an error if the cursor is not
+ * positioned in a word.
+ *
+ * @param editor the text editor
+ * @param selection the selection
+ * @param extraWordChars additional characters to consider part of a word
+ */
+ export function getCursorWordAsSelection(editor: vscode.TextEditor, selection: vscode.Selection, extraWordChars: string[] = []): vscode.Selection {
+    // We're using a regex "character class" (i.e., brackets), so we only need to escape '^', '-', ']', and '\'
+    const escapedExtraWordChars = extraWordChars.map(char => {
+        if (char.length !== 1) {
+            throw new UserError(`All configured extra word characters must have length 1! The following is invalid: '${char}'`);
+        } else if (/[\^\-\]\\]/.test(char)) {
+            return '\\' + char;
+        } else {
+            return char;
+        }
+    });
+    const regexStr = `[\\w${escapedExtraWordChars.join('')}]+`;
+    const regex = new RegExp(regexStr, 'g');
+
+    const lineText = editor.document.lineAt(selection.start.line).text;
+    const matches: Match[] = [];
+
+    let match: RegExpExecArray | null;
+    while ((match = regex.exec(lineText)) !== null) {
+        matches.push({
+            start: match.index,
+            end: match.index + match[0].length,
+        });
+    }
+
+    const cursorPosition = selection.active.character;
+    const cursorMatch = matches.find(match => {
+        // Cursor must be anywhere within the word or immediately before/after
+        return cursorPosition >= match.start && cursorPosition <= match.end;
+    });
+    if (!cursorMatch) {
+        throw new UserError('Cursor must be located within a word!');
+    }
+    return new vscode.Selection(
+        selection.start.line,
+        cursorMatch.start,
+        selection.start.line,
+        cursorMatch.end
+    );
 }

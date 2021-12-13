@@ -6,7 +6,8 @@
     "configurations": [
         {
             "args": [
-                "--extensionDevelopmentPath=${workspaceFolder}"
+                "--extensionDevelopmentPath=${workspaceFolder}",
+                "${workspaceFolder}/.."
             ],
             "name": "Launch Extension",
             "outFiles": [

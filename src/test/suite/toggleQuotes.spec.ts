@@ -63,7 +63,7 @@ describe('toggleQuotes cycles the quote characters used in a string', () => {
         );
     });
 
-    it('multiple cursors', async () => {
+    it('multiple cursors - all selections use casing of first selection', async () => {
         const editor = await openEditorWithContent('javascript', dedent`
             "string 1",
             'string 2',
