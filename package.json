@@ -29,6 +29,10 @@
 			{
 				"command": "vext.toggleCase",
 				"title": "Toggle Text Casing"
+			},
+			{
+				"command": "vext.toggleVariableNamingFormat",
+				"title": "Toggle Variable Naming Format"
 			}
 		],
 		"keybindings": [
@@ -39,13 +43,18 @@
 			},
 			{
 				"command": "vext.toggleQuotes",
-				"key": "ctrl+'",
-				"mac": "cmd+'"
+				"key": "ctrl+alt+'",
+				"mac": "cmd+alt+'"
 			},
 			{
 				"command": "vext.toggleCase",
 				"key": "ctrl+alt+a",
 				"mac": "cmd+alt+a"
+			},
+			{
+				"command": "vext.toggleVariableNamingFormat",
+				"key": "ctrl+alt+v",
+				"mac": "cmd+alt+v"
 			}
 		],
 		"configuration": {
@@ -85,6 +94,17 @@
 						"#"
 					],
 					"description": "Additional characters that will be considered a part of \\w when parsing words to toggle case. For example, if '-' is specified, then 'super-secret' would be considered a single word."
+				},
+				"vext.variableNamingFormats": {
+					"type": "array",
+					"default": [
+						"camel",
+						"pascal",
+						"snake",
+						"snakeUpper",
+						"kebab"
+					],
+					"description": "Variable naming formats to toggle between. 'kebabUpper' is also available."
 				}
 			}
 		}
@@ -92,7 +112,8 @@
 	"activationEvents": [
 		"onCommand:vext.toggleCommentType",
 		"onCommand:vext.toggleQuotes",
-		"onCommand:vext.toggleCase"
+		"onCommand:vext.toggleCase",
+		"onCommand:vext.toggleVariableNamingFormat"
 	],
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

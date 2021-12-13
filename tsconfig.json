@@ -9,14 +9,14 @@
 		"rootDir": "src",
 		"baseUrl": "src",
 		"typeRoots": [
-			"./src/types",
+			"src/external-types",
 			"./node_modules/@types"
 		],
 		"sourceMap": true,
 		"strict": true   /* enable all strict type-checking options */
 	},
 	"exclude": [
-		"src/types",
+		"src/external-types",
 		"node_modules",
 		".vscode-test",
 		"scratch",

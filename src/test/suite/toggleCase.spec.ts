@@ -63,7 +63,7 @@ describe('toggleCase cycles the case of a selection or word', () => {
             );
         });
 
-        it('multiple cursors', async () => {
+        it('multiple cursors - all selections use casing of first selection', async () => {
             const editor = await openEditorWithContent('javascript', dedent`
                 select * from CASE
                 SELECT * from CASE
@@ -97,7 +97,7 @@ describe('toggleCase cycles the case of a selection or word', () => {
                 'const msg = "Two spaces?  Not gonna work.";',
                 'const msg = "Two spaces? '.length
             );
-            await expect(toggleCase(editor)).to.be.rejectedWith('Cursor must be located within a word if not selecting a section of text!');
+            await expect(toggleCase(editor)).to.be.rejectedWith('Cursor must be located within a word!');
         });
 
         describe('caseExtraWordChars configuration', async () => {
@@ -136,7 +136,7 @@ describe('toggleCase cycles the case of a selection or word', () => {
                     'const msg = "this '.length
                 );
                 await vscode.workspace.getConfiguration(EXTENSION_NAME).update(CASE_EXTRA_WORD_CHARS, ['__', '^']);
-                await expect(toggleCase(editor)).to.be.rejectedWith(`All configured caseExtraWordChars must have length 1! The following is invalid: '__'`);
+                await expect(toggleCase(editor)).to.be.rejectedWith(`All configured extra word characters must have length 1! The following is invalid: '__'`);
             });
         });
     });
