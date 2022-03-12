@@ -14,7 +14,10 @@
                 "${workspaceFolder}/out/**/*.js"
             ],
             "request": "launch",
-            "type": "pwa-extensionHost"
+            "type": "pwa-extensionHost",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
         },
         {
             "name": "Test Extension",
@@ -30,7 +33,10 @@
             "env": {
                 "TESTING": "true"
 			},
-            "outFiles": ["${workspaceFolder}/out/test/**/*.js"]
+            "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
         }
     ]
 }
