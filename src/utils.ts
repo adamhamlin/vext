@@ -1,5 +1,6 @@
 import { Match } from 'types';
 import * as vscode from 'vscode';
+import { parse } from 'comment-json';
 
 // Some error types used to drive user messages (see handleError below)
 export class UserError extends Error {}
@@ -101,4 +102,11 @@ export function getNextElement<T>(arr: T[], currentValue: T): T {
         selection.start.line,
         cursorMatch.end
     );
+}
+
+/**
+ * Parse a JSON string and return JSON object, stripping comments if present.
+ */
+export function parseJsonStripComments<T extends Record<string, unknown>>(jsonStr: string): T {
+    return parse(jsonStr, undefined, true) as unknown as T;
 }

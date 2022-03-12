@@ -13,6 +13,7 @@
 			"./node_modules/@types"
 		],
 		"sourceMap": true,
+		"skipLibCheck": true,
 		"strict": true   /* enable all strict type-checking options */
 	},
 	"exclude": [

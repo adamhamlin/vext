@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as _ from 'lodash';
 import { EXTENSION_NAME } from '../commands';
-import { getCurrentLang, UserError } from '../utils';
+import { getCurrentLang, parseJsonStripComments, UserError } from '../utils';
 import { basename } from 'path';
 
 export type CommentConfig = {
@@ -9,6 +9,13 @@ export type CommentConfig = {
     blockStart: string,
     blockMiddle: string,
     blockEnd: string
+}
+
+type LanguageConfiguration = {
+    comments: {
+        blockComment: string[];
+        lineComment: string;
+    }
 }
 
 // Supported configuration properties
@@ -60,7 +67,7 @@ export function shouldAutoFormat(): boolean {
     return getConfig<boolean>(AUTO_FORMAT_ON_COMMENT_TOGGLE) && getCurrentLang() !== 'plaintext';
 }
 
-async function getLanguageConfigurationJson(language: string = getCurrentLang()): Promise<{comments: { blockComment: string[], lineComment: string }}> {
+async function getLanguageConfigurationJson(language: string = getCurrentLang()): Promise<LanguageConfiguration> {
     // Languages are represented as extensions
     const languageExtensionName = `vscode.${language}`;
     try {
@@ -75,7 +82,8 @@ async function getLanguageConfigurationJson(language: string = getCurrentLang())
         }
         // The configurationFilePath is something like './blah-language-configuration.json', so we only want basename
         const configFileUri = vscode.Uri.joinPath(extensionUri, basename(configurationFilePath));
-        return JSON.parse((await vscode.workspace.fs.readFile(configFileUri)).toString());
+        const configFileText = (await vscode.workspace.fs.readFile(configFileUri)).toString();
+        return parseJsonStripComments<LanguageConfiguration>(configFileText);
     } catch (err) {
         vscode.window.showWarningMessage(`Unable to load configuration for language '${language}': ${(err as Error).message}. Falling back to javascript-style comments.`);
         return getLanguageConfigurationJson('javascript');
