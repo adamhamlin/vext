@@ -1,16 +1,9 @@
 import * as vscode from 'vscode';
-import { getCursorWordAsSelection, handleError, UserError } from '../utils';
+import { getCursorWordAsSelection, handleError, isHighlightedSelection } from '../utils';
 import { CASE_EXTRA_WORD_CHARS, getConfig } from '../configuration';
 import * as _ from 'lodash';
-import { Match } from 'types';
 
 export const TOGGLE_CASE_CMD = 'toggleCase';
-
-/**
- * Finds all instances of words, including any configured "extra" word characters
- */
-const EXTRA_WORD_CHARS_PLACEHOLDER = '<EXTRA_WORD_CHARS>';
-const WORD_REGEX_TEMPLATE = `[\\w${EXTRA_WORD_CHARS_PLACEHOLDER}]+`;
 
 
 /**
@@ -25,9 +18,7 @@ export async function toggleCase(editor: vscode.TextEditor): Promise<void> {
 
         // Will have multiple selections if multi-line cursor is used
         for (const selection of editor.selections) {
-            const isMultiCharacterSelection = (selection.start.character !== selection.end.character) || (selection.start.line !== selection.end.line);
-
-            if (isMultiCharacterSelection) {
+            if (isHighlightedSelection(selection)) {
                 // Toggle the whole selection
                 selectionsToToggle.push(selection);
             } else {
@@ -49,7 +40,7 @@ export async function toggleCase(editor: vscode.TextEditor): Promise<void> {
             });
         } else {
             // I don't know if this can happen
-            throw Error("No selections found!");
+            throw Error('No selections found!');
         }
     });
 }

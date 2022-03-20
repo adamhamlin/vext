@@ -72,7 +72,7 @@ export async function toggleVariableNamingFormat(editor: vscode.TextEditor): Pro
             });
         } else {
             // I don't know if this can happen
-            throw Error("No selections found!");
+            throw Error('No selections found!');
         }
     });
 }

@@ -64,19 +64,7 @@ export function getNextElement<T>(arr: T[], currentValue: T): T {
  * @param extraWordChars additional characters to consider part of a word
  */
  export function getCursorWordAsSelection(editor: vscode.TextEditor, selection: vscode.Selection, extraWordChars: string[] = []): vscode.Selection {
-    // We're using a regex "character class" (i.e., brackets), so we only need to escape '^', '-', ']', and '\'
-    const escapedExtraWordChars = extraWordChars.map(char => {
-        if (char.length !== 1) {
-            throw new UserError(`All configured extra word characters must have length 1! The following is invalid: '${char}'`);
-        } else if (/[\^\-\]\\]/.test(char)) {
-            return '\\' + char;
-        } else {
-            return char;
-        }
-    });
-    const regexStr = `[\\w${escapedExtraWordChars.join('')}]+`;
-    const regex = new RegExp(regexStr, 'g');
-
+    const regex = getWordsRegex(extraWordChars, false);
     const lineText = editor.document.lineAt(selection.start.line).text;
     const matches: Match[] = [];
 
@@ -105,8 +93,45 @@ export function getNextElement<T>(arr: T[], currentValue: T): T {
 }
 
 /**
+ * @param text the text to test
+ * @param extraWordChars characters that should also be considered a member of \w class
+ * @returns true if text is a single word
+ */
+export function isWord(text: string, extraWordChars: string[]): boolean {
+    return getWordsRegex(extraWordChars, true).test(text);
+}
+
+/**
  * Parse a JSON string and return JSON object, stripping comments if present.
  */
 export function parseJsonStripComments<T extends Record<string, unknown>>(jsonStr: string): T {
     return parse(jsonStr, undefined, true) as unknown as T;
+}
+
+/**
+ * Returns true if the given selection is a "highlighted" selection (i.e., not just a standalone cursor)
+ */
+export function isHighlightedSelection(selection: vscode.Selection): boolean {
+    return (selection.start.character !== selection.end.character) || (selection.start.line !== selection.end.line);
+}
+
+/**
+ * Helper to get a regex for words, including the provided extra characters
+ */
+function getWordsRegex(extraWordChars: string[], matchFullLine: boolean): RegExp {
+    // We're using a regex "character class" (i.e., brackets), so we only need to escape '^', '-', ']', and '\'
+    const escapedExtraWordChars = extraWordChars.map(char => {
+        if (char.length !== 1) {
+            throw new UserError(`All configured extra word characters must have length 1! The following is invalid: '${char}'`);
+        } else if (/[\^\-\]\\]/.test(char)) {
+            return '\\' + char;
+        } else {
+            return char;
+        }
+    });
+    let regexStr = `[\\w${escapedExtraWordChars.join('')}]+`;
+    if (matchFullLine) {
+        regexStr = `^${regexStr}$`;
+    }
+    return new RegExp(regexStr, 'g');
 }
