@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { getNextElement, handleError, UserError } from '../utils';
+import { getCursorWordAsSelection, getNextElement, handleError, isHighlightedSelection, isWord, UserError } from '../utils';
 import { getConfig, QUOTE_CHARS } from '../configuration';
 import * as _ from 'lodash';
 import { Match } from 'types';
@@ -24,8 +24,11 @@ const BACKTICK_QUOTE_REGEX = '(?<!\\\\)`(?:[^`\\\\{]|\\\\.|(?<!\\$)\\{)*?`';
 
 type Char = string;
 type QuoteMatch = Match & {
+    startLine: number;
+    endLine: number;
     quoteChar: Char;
     innerText: string;
+    allowUnquoted: boolean;
 };
 type QuoteReplacement = {
     selection: vscode.Selection,
@@ -41,48 +44,87 @@ type QuoteReplacement = {
 export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
     await handleError(async () => {
         const quoteChars = getConfig<string[]>(QUOTE_CHARS);
+        const extraWordChars: string[] = []; // TODO: Make this configurable?
         for (const char of quoteChars) {
             if (_.escapeRegExp(char).length !== 1) {
                 throw new UserError('All configured quote characters must be strings of length 1 and cannot be special regex characters!');
             }
         }
 
-        const quotesToReplace: QuoteReplacement[] = [];
-        let newQuoteChar = '';
-
         // Will have multiple selections if multi-line cursor is used
-        for (const selection of editor.selections) {
-            if (selection.start.line !== selection.end.line) {
-                throw new UserError('Cannot process multi-line selection! However, multi-line cursors are supported.');
+        const quoteMatches: QuoteMatch[] = editor.selections.map(selection => {
+            let cursorMatch: QuoteMatch | undefined;
+
+            if (isHighlightedSelection(selection)) {
+                // Just toggle quotes around the entire selection
+                const regexStr = `^([${quoteChars.join('')}])[\\s|\\S]*\\1$`;
+                const selectionText = editor.document.getText(selection);
+                const quoteChar = (new RegExp(regexStr)).exec(selectionText)?.[1] || '';
+                const innerText = quoteChar ? selectionText.substring(1, selectionText.length - 1) : selectionText;
+                cursorMatch = {
+                    startLine: selection.start.line,
+                    endLine: selection.end.line,
+                    start: selection.start.character,
+                    end: selection.end.character,
+                    innerText,
+                    quoteChar,
+                    allowUnquoted: true
+                };
+            } else {
+                // Try to extrapolate a properly-quoted string around the current cursor position
+                const lineNumber = selection.start.line;
+                const lineText = editor.document.lineAt(lineNumber).text;
+                const matches = getQuotedStrings(lineText, lineNumber, quoteChars, extraWordChars);
+                const cursorPosition = selection.active.character;
+                cursorMatch = matches.find(match => {
+                    // Cursor must be anywhere within the quote or immediately before/after
+                    return cursorPosition >= match.start && cursorPosition <= match.end;
+                });
+
+                // If we didn't find the cursor w/in a quoted string, but we do find it within a (unquoted) word, let's add
+                // quotes to this unquoted word.
+                if (!cursorMatch) {
+                    try {
+                        const cursorWordSelection = getCursorWordAsSelection(editor, selection, extraWordChars);
+                        if (cursorWordSelection) {
+                            cursorMatch = {
+                                startLine: lineNumber,
+                                endLine: lineNumber,
+                                start: cursorWordSelection.start.character,
+                                end: cursorWordSelection.end.character,
+                                innerText: editor.document.getText(cursorWordSelection),
+                                quoteChar: '',
+                                allowUnquoted: true
+                            };
+                        } else {
+                            throw new Error('catch me!');
+                        }
+                    } catch (err) {
+                        throw new UserError('Cursor must be located within a properly-quoted string or unquoted word! If a backtick string, it cannot contain templating.');
+                    }
+                }
+
             }
-            const lineText = editor.document.lineAt(selection.start.line).text;
-            const matches = getQuotedStrings(lineText, quoteChars);
-            const cursorPosition = selection.active.character;
-            const cursorMatch = matches.find(match => {
-                // Cursor must be anywhere within the quote or immediately before/after
-                return cursorPosition >= match.start && cursorPosition <= match.end;
+            return cursorMatch;
+        });
+
+        if (quoteMatches.length) {
+            if (quoteMatches.every(match => match.allowUnquoted)) {
+                quoteChars.push('');
+            }
+            // We'll use first quote character as starting point so we can convert every line to the same new quote char
+            const newQuoteChar = getNextElement(quoteChars, quoteMatches[0].quoteChar);
+            const quotesToReplace: QuoteReplacement[] = quoteMatches.map(match => {
+                return {
+                    replacementText: getReplacementText(match, newQuoteChar),
+                    selection: new vscode.Selection(
+                        match.startLine,
+                        match.start,
+                        match.endLine,
+                        match.end
+                    )
+                };
             });
-            if (!cursorMatch) {
-                throw new UserError('Cursor must be located within a properly-quoted string! If a backtick string, it cannot contain templating.');
-            }
-
-            // We'll take the first quote char we see so we can convert every line to the same new quote char
-            if (!newQuoteChar) {
-                newQuoteChar = getNextElement(quoteChars, cursorMatch.quoteChar);
-            }
-
-            quotesToReplace.push({
-                replacementText: getReplacementText(cursorMatch, newQuoteChar),
-                selection: new vscode.Selection(
-                    selection.start.line,
-                    cursorMatch.start,
-                    selection.start.line,
-                    cursorMatch.end
-                )
-            });
-        }
-
-        if (quotesToReplace.length) {
             await editor.edit(builder => {
                 for (const quote of quotesToReplace) {
                     builder.replace(quote.selection, quote.replacementText);
@@ -90,7 +132,7 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
             });
         } else {
             // I don't know if this can happen
-            throw Error("No selections found!");
+            throw Error('No selections found!');
         }
     });
 }
@@ -99,9 +141,11 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
  * Get all instances of quoted strings in the given line of text.
  *
  * @param line the text to process
+ * @param lineNumber the line number of line
  * @param quoteChars the quote characters to look for
+ * @param extraWordChars additional characters to consider part of a word
  */
-function getQuotedStrings(line: string, quoteChars: string[]): QuoteMatch[] {
+function getQuotedStrings(line: string, lineNumber: number, quoteChars: string[], extraWordChars: string[]): QuoteMatch[] {
     // We need special handling for backticks, if configured
     const standardQuoteChars = _.without(quoteChars, '`');
     const usingBackticks = standardQuoteChars.length < quoteChars.length;
@@ -116,11 +160,15 @@ function getQuotedStrings(line: string, quoteChars: string[]): QuoteMatch[] {
     let match: RegExpExecArray | null;
     while ((match = regex.exec(line)) !== null) {
         const matchLength = match[0].length;
+        const innerText = match[0].substring(1, matchLength - 1);
         res.push({
+            startLine: lineNumber,
+            endLine: lineNumber,
             start: match.index,
             end: match.index + matchLength,
-            quoteChar: match[1],
-            innerText: match[0].substring(1, matchLength - 1)
+            quoteChar: match[1] || '`',
+            innerText: match[0].substring(1, matchLength - 1),
+            allowUnquoted: isWord(innerText, extraWordChars)
         });
     }
     return res;
@@ -131,8 +179,16 @@ function getQuotedStrings(line: string, quoteChars: string[]): QuoteMatch[] {
  */
 function getReplacementText(quoteMatch: QuoteMatch, newQuoteChar: Char): string {
     const oldQuoteChar = quoteMatch.quoteChar;
-    const innerText = (newQuoteChar === oldQuoteChar) ? quoteMatch.innerText : quoteMatch.innerText
-        .replace(new RegExp(newQuoteChar, 'g'), '\\' + newQuoteChar)    // new quote char needs to be escaped
-        .replace(new RegExp('\\\\' + oldQuoteChar, 'g'), oldQuoteChar); // original quote needs to be unescaped
+    let innerText = quoteMatch.innerText;
+    if (newQuoteChar !== oldQuoteChar) {
+        if (newQuoteChar !== '') {
+            // Any existing new quote chars need to be escaped
+            innerText = innerText.replace(new RegExp(newQuoteChar, 'g'), '\\' + newQuoteChar);
+        }
+        if (oldQuoteChar !== '') {
+            // Already-escaped original quote chars need to be unescaped
+            innerText = innerText.replace(new RegExp('\\\\' + oldQuoteChar, 'g'), oldQuoteChar);
+        }
+    }
     return newQuoteChar + innerText + newQuoteChar;
 }
