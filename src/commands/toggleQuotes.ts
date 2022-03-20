@@ -53,7 +53,7 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
 
         // Will have multiple selections if multi-line cursor is used
         const quoteMatches: QuoteMatch[] = editor.selections.map(selection => {
-            let cursorMatch: QuoteMatch | undefined;
+            let quoteMatch: QuoteMatch | undefined;
 
             if (isHighlightedSelection(selection)) {
                 // Just toggle quotes around the entire selection
@@ -61,7 +61,7 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
                 const selectionText = editor.document.getText(selection);
                 const quoteChar = (new RegExp(regexStr)).exec(selectionText)?.[1] || '';
                 const innerText = quoteChar ? selectionText.substring(1, selectionText.length - 1) : selectionText;
-                cursorMatch = {
+                quoteMatch = {
                     startLine: selection.start.line,
                     endLine: selection.end.line,
                     start: selection.start.character,
@@ -76,18 +76,18 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
                 const lineText = editor.document.lineAt(lineNumber).text;
                 const matches = getQuotedStrings(lineText, lineNumber, quoteChars, extraWordChars);
                 const cursorPosition = selection.active.character;
-                cursorMatch = matches.find(match => {
+                quoteMatch = matches.find(match => {
                     // Cursor must be anywhere within the quote or immediately before/after
                     return cursorPosition >= match.start && cursorPosition <= match.end;
                 });
 
-                // If we didn't find the cursor w/in a quoted string, but we do find it within a (unquoted) word, let's add
-                // quotes to this unquoted word.
-                if (!cursorMatch) {
+                // If we didn't find the cursor w/in a properly-quoted string, but we do find it within an (unquoted) word,
+                // let's add quotes to this unquoted word.
+                if (!quoteMatch) {
                     try {
                         const cursorWordSelection = getCursorWordAsSelection(editor, selection, extraWordChars);
                         if (cursorWordSelection) {
-                            cursorMatch = {
+                            quoteMatch = {
                                 startLine: lineNumber,
                                 endLine: lineNumber,
                                 start: cursorWordSelection.start.character,
@@ -105,7 +105,7 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
                 }
 
             }
-            return cursorMatch;
+            return quoteMatch;
         });
 
         if (quoteMatches.length) {
