@@ -38,3 +38,20 @@ export async function openEditorWithContentAndSetCursor(language: string | undef
     await vscode.commands.executeCommand('cursorMove', { to: 'right', by: 'character', value: cursorPosition});
     return editor;
 }
+
+/**
+ * Accomplish openEditorWithContent then highlight/select the specified section.
+ *
+ * NOTE: Currently this assumes only 1 line of content.
+ *
+ * @param language the language for the document. Use undefined to not specify a language
+ * @param content the string content of the document
+ * @param start the column position to start the selection
+ * @param end the column position to end the selection
+ */
+ export async function openEditorWithContentAndHighlightSelection(language: string | undefined, content: string, start: number, end: number): Promise<vscode.TextEditor> {
+    const editor = await openEditorWithContent(language, content);
+    await vscode.commands.executeCommand('cursorMove', { to: 'right', by: 'character', value: start});
+    await vscode.commands.executeCommand('cursorMove', { to: 'right', by: 'character', value: end - start, select: true});
+    return editor;
+}

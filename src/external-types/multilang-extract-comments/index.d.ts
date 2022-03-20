@@ -13,6 +13,6 @@ declare module 'multilang-extract-comments' {
         code: string // the extracted code text of the codeStart line
     }
     type CommentMap = Record<ExtractedComment['begin'], ExtractedComment>;
-    function extract(text: string, options?: any): CommentMap;
+    function extract(text: string, options?: Record<string, unknown>): CommentMap;
     export = extract;
 }

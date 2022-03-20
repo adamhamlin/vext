@@ -32,7 +32,7 @@ export function getConfig<T>(key: string): T {
     if (_.isUndefined(configValue)) {
         throw new UserError(`No value found for the configuration key ${key}.`);
     }
-    return configValue;
+    return _.cloneDeep(configValue);
 }
 
 /**
