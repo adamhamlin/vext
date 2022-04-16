@@ -127,21 +127,25 @@ describe('toggleJsonToJs cycles between strict JSON and "pretty" Javascript obje
         `);
     });
 
+    it('basic usage -- array', async () => {
+        const editor = await openEditorWithContentAndSelectAll('javascript', dedent`
+            [{"a":"A"},{"b":"B"}]
+        `);
+        await toggleJsonToJs(editor);
+        expect(editor.document.getText(editor.selection)).to.equal(dedent`
+            [{ a: 'A' }, { b: 'B' }]
+        `);
+        await toggleJsonToJs(editor);
+        expect(editor.document.getText(editor.selection)).to.equal(dedent`
+            [{"a":"A"},{"b":"B"}]
+        `);
+    });
+
     it('error when no text selected', async () => {
         const editor = await openEditorWithContentAndSetCursor(
             'javascript',
             `const obj = { needs: 'highlight' }`,
             'const obj = { needs'.length
-        );
-        await expect(toggleJsonToJs(editor)).to.be.rejectedWith(usageError);
-    });
-
-    it('error when selected text is not a JSON/Javascript object', async () => {
-        const editor = await openEditorWithContentAndHighlightSelection(
-            'typescript',
-            `const arr = [1, 2, 3]`,
-            `const arr = `.length,
-            `const arr = [1, 2, 3]`.length
         );
         await expect(toggleJsonToJs(editor)).to.be.rejectedWith(usageError);
     });
@@ -154,6 +158,28 @@ describe('toggleJsonToJs cycles between strict JSON and "pretty" Javascript obje
             `const obj = { sum: 4 + 5 }`.length
         );
         await expect(toggleJsonToJs(editor)).to.be.rejectedWith(usageError);
+    });
+
+    describe('error when selected text is not a JSON/Javascript object or array', () => {
+        it('selection is a string', async () => {
+            const editor = await openEditorWithContentAndHighlightSelection(
+                'typescript',
+                `const str = "a string"`,
+                `const str = `.length,
+                `const str = "a string"`.length
+            );
+            await expect(toggleJsonToJs(editor)).to.be.rejectedWith(usageError);
+        });
+
+        it('bad highlight -- selection is only part of an object', async () => {
+            const editor = await openEditorWithContentAndHighlightSelection(
+                'typescript',
+                `const arr = [1, 2, 3]`,
+                `const arr = `.length,
+                `const arr = [1, 2, 3`.length
+            );
+            await expect(toggleJsonToJs(editor)).to.be.rejectedWith(usageError);
+        });
     });
 
     describe('using double quotes for output', async () => {
