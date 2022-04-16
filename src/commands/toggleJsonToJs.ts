@@ -31,8 +31,8 @@ export async function toggleJsonToJs(editor: vscode.TextEditor): Promise<void> {
         const indent = isSingleLineSelection ? undefined : +(vscode.window.activeTextEditor?.options?.tabSize || 4);
         let replacementText: string;
 
-        // Let's just deal with objects
-        if (!_.startsWith(selectionText, '{') || !_.endsWith(selectionText, '}')) {
+        // Let's just deal with objects and arrays
+        if (![['{', '}'], ['[', ']']].some(([open, close]) => _.startsWith(selectionText, open) && _.endsWith(selectionText, close))) {
             throw usageError;
         }
 
