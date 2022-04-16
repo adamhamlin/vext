@@ -45,7 +45,7 @@
 			},
 			{
 				"command": "vext.toggleJsonToJs",
-				"title": "Toggle JSON to Javascript Object"
+				"title": "Toggle JSON to Javascript"
 			}
 		],
 		"keybindings": [
@@ -127,7 +127,7 @@
 				"vext.useDoubleQuotesForJsStrings": {
 					"type": "boolean",
 					"default": false,
-					"description": "When enabled, toggling JSON to a Javascript object will use double quotes (instead of single quotes) for string values and keys that must be quoted."
+					"description": "When enabled, toggling JSON to Javascript will use double quotes (instead of single quotes) for string values and keys that must be quoted."
 				}
 			}
 		}
