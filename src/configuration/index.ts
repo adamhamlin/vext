@@ -23,12 +23,13 @@ export const AUTO_FORMAT_ON_COMMENT_TOGGLE = 'autoFormatOnToggleCommentType';
 export const QUOTE_CHARS = 'quoteChars';
 export const CASE_EXTRA_WORD_CHARS = 'caseExtraWordChars';
 export const VARIABLE_NAMING_FORMATS = 'variableNamingFormats';
+export const USE_DOUBLE_QUOTES_FOR_JS_STRINGS = 'useDoubleQuotesForJsStrings';
 
 /**
- * Get the Vext configuration setting for the specified key.
+ * Get any configuration setting for the specified key (defaults to Vext configuration).
  */
-export function getConfig<T>(key: string): T {
-    const configValue: T | undefined = vscode.workspace.getConfiguration(EXTENSION_NAME).get(key);
+export function getConfig<T>(key: string, configurationName = EXTENSION_NAME): T {
+    const configValue: T | undefined = vscode.workspace.getConfiguration(configurationName).get(key);
     if (_.isUndefined(configValue)) {
         throw new UserError(`No value found for the configuration key ${key}.`);
     }

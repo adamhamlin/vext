@@ -12,6 +12,7 @@
 	"engines": {
 		"vscode": "^1.57.0"
 	},
+	"license": "MIT",
 	"categories": [
 		"Other"
 	],
@@ -41,6 +42,10 @@
 			{
 				"command": "vext.toggleVariableNamingFormat",
 				"title": "Toggle Variable Naming Format"
+			},
+			{
+				"command": "vext.toggleJsonToJs",
+				"title": "Toggle JSON to Javascript Object"
 			}
 		],
 		"keybindings": [
@@ -63,6 +68,11 @@
 				"command": "vext.toggleVariableNamingFormat",
 				"key": "ctrl+alt+v",
 				"mac": "cmd+alt+v"
+			},
+			{
+				"command": "vext.toggleJsonToJs",
+				"key": "ctrl+alt+j",
+				"mac": "cmd+alt+j"
 			}
 		],
 		"configuration": {
@@ -113,6 +123,11 @@
 						"kebab"
 					],
 					"description": "Variable naming formats to toggle between. 'kebabUpper' is also available."
+				},
+				"vext.useDoubleQuotesForJsStrings": {
+					"type": "boolean",
+					"default": false,
+					"description": "When enabled, toggling JSON to a Javascript object will use double quotes (instead of single quotes) for string values and keys that must be quoted."
 				}
 			}
 		}
@@ -121,33 +136,35 @@
 		"onCommand:vext.toggleCommentType",
 		"onCommand:vext.toggleQuotes",
 		"onCommand:vext.toggleCase",
-		"onCommand:vext.toggleVariableNamingFormat"
+		"onCommand:vext.toggleVariableNamingFormat",
+		"onCommand:vext.toggleJsonToJs"
 	],
 	"dependencies": {
-		"@types/lodash": "4.14.172",
-		"@types/node": "14.x",
+		"@types/lodash": "^4.14.172",
+		"@types/node": "^14.x",
 		"@types/vscode": "^1.57.0",
 		"comment-json": "^4.2.2",
-		"lodash": "4.17.21",
-		"module-alias": "2.2.2",
-		"multilang-extract-comments": "0.4.0",
-		"typescript": "4.3.2"
+		"json5": "github:adamhamlin/json5#v2.3.0",
+		"lodash": "^4.17.21",
+		"module-alias": "^2.2.2",
+		"multilang-extract-comments": "^0.4.0",
+		"typescript": "^4.3.2"
 	},
 	"devDependencies": {
 		"@types/chai": "^4.2.22",
 		"@types/chai-as-promised": "^7.1.4",
-		"@types/dedent": "0.7.0",
-		"@types/glob": "7.1.3",
-		"@types/mocha": "8.2.2",
-		"@typescript-eslint/eslint-plugin": "4.26.0",
-		"@typescript-eslint/parser": "4.26.0",
-		"chai": "4.3.4",
+		"@types/dedent": "^0.7.0",
+		"@types/glob": "^7.1.3",
+		"@types/mocha": "^8.2.2",
+		"@typescript-eslint/eslint-plugin": "^4.26.0",
+		"@typescript-eslint/parser": "^4.26.0",
+		"@vscode/test-electron": "^2.1.3",
+		"chai": "^4.3.4",
 		"chai-as-promised": "^7.1.1",
-		"dedent": "0.7.0",
-		"eslint": "7.27.0",
+		"dedent": "^0.7.0",
+		"eslint": "^7.27.0",
 		"glob": "^7.1.7",
 		"glob-promise": "^4.2.2",
-		"mocha": "^9.2.2",
-		"vscode-test": "1.5.2"
+		"mocha": "^9.2.2"
 	}
 }
