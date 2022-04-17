@@ -1,7 +1,7 @@
 /**@type {import('eslint').Linter.Config} */
-// eslint-disable-next-line no-undef
 module.exports = {
     root: true,
+    ignorePatterns: ['**/*.js'],
     parser: '@typescript-eslint/parser',
     plugins: [
         '@typescript-eslint',
