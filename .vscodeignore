@@ -1,4 +1,8 @@
+.vscode/**
+.gitignore
+.eslintrc.js
 **/*.ts
+**/*.map
 **/tsconfig.json
-resources/demo.gif
-scratch/
+resources/demos/**
+scratch/**
