@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/adamhamlin/vext/compare/v0.2.1...v0.3.0) (2022-04-18)
+
+
+### Features
+
+* Add toggleJsonToJs command ([#16](https://github.com/adamhamlin/vext/issues/16)) ([018b5a0](https://github.com/adamhamlin/vext/commit/018b5a0384797a015cc7d43a58ff504ce1f959df))
+* Allow top-level array for toggleJsonToJs command ([#17](https://github.com/adamhamlin/vext/issues/17)) ([44199a9](https://github.com/adamhamlin/vext/commit/44199a9107d8bbe00ab5a4c81f66ac6ce93b445e))
+* Support `Toggle Quotes` with selections and toggling quotes on/off ([#15](https://github.com/adamhamlin/vext/issues/15)) ([dc9345c](https://github.com/adamhamlin/vext/commit/dc9345cd0bc2df34cc1260864a942fc68cd26d3b))
+
 ### [0.2.1](https://github.com/adamhamlin/vext/compare/v0.2.0...v0.2.1) (2022-03-12)
 
 
