@@ -89,6 +89,30 @@ describe('toggleQuotes cycles the quote characters used in a string or selection
             );
         });
 
+        it('correct behavior when cursor is at end of word', async () => {
+            const editor = await openEditorWithContentAndSetCursor(
+                'javascript',
+                `// Something I want to use quotes on...`,
+                '// Something I want to use quotes'.length
+            );
+            await toggleQuotes(editor);
+            expect(editor.document.getText()).to.equal(
+                `// Something I want to use "quotes" on...`
+            );
+            await toggleQuotes(editor);
+            expect(editor.document.getText()).to.equal(
+                `// Something I want to use 'quotes' on...`
+            );
+            await toggleQuotes(editor);
+            expect(editor.document.getText()).to.equal(
+                `// Something I want to use \`quotes\` on...`
+            );
+            await toggleQuotes(editor);
+            expect(editor.document.getText()).to.equal(
+                `// Something I want to use quotes on...`
+            );
+        });
+
         it('multiple cursors - all selections use quote character from first selection', async () => {
             const editor = await openEditorWithContent('javascript', dedent`
                 "string1"
