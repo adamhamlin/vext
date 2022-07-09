@@ -125,11 +125,20 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
                     )
                 };
             });
+
+            // Sometimes non-highlighted selections can become highlighted after replacement--which can lead to undesirable behavior.
+            // Make a note of this now so we can undo it afterwards (only need to check first selection)
+            const removeHighlighting = !isHighlightedSelection(editor.selections[0]);
+
             await editor.edit(builder => {
                 for (const quote of quotesToReplace) {
                     builder.replace(quote.selection, quote.replacementText);
                 }
             });
+
+            if (removeHighlighting) {
+                editor.selections = editor.selections.map(s => new vscode.Selection(s.active, s.active));
+            }
         } else {
             // I don't know if this can happen
             throw Error('No selections found!');
