@@ -11,6 +11,9 @@ src/.vscode/
 # DC Cache
 .dccache
 
+# MacOS
+.DS_Store
+
 ##### DEFAULT IGNORES #####
 
 # Logs
