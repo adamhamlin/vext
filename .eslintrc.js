@@ -10,7 +10,14 @@ module.exports = {
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
     ],
+    parserOptions: {
+        ecmaVersion: 13,
+        sourceType: 'module',
+        project: '../tsconfig.json',
+    },
     rules: {
+        'no-return-await': 'off',
+        '@typescript-eslint/return-await': ['error', 'in-try-catch'],
         '@typescript-eslint/no-explicit-any': 2,
         '@typescript-eslint/explicit-module-boundary-types': 0,
         '@typescript-eslint/no-non-null-assertion': 0,

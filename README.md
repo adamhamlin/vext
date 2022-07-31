@@ -21,12 +21,16 @@ Simple VS Code Extension to toggle text features! With `vext` commands you can..
     - `vext.autoFormatOnToggleCommentType`: When enabled, automatically format the selection when toggling comment type. Requires the [Rewrap Extension](https://marketplace.visualstudio.com/items?itemName=stkb.rewrap) to be installed. Defaults to false.
 ***
 
-- `Toggle JSON to Javascript`: Toggle JSON object/array to "pretty" Javascript, or vice versa
+- `Toggle JSON to Javascript to YAML`: Toggle JSON object/array to "pretty" Javascript then to YAML and back.
 
-  ![JSON-to-JS Demo](resources/demos/json-to-js.gif)
+  ![JSON-to-JS-to-YAML Demo](resources/demos/json-to-js-to-yaml.gif)
   - Keybinding: <kbd>Cmd</kbd>+<kbd>Opt</kbd>+<kbd>j</kbd> (_Mac_), <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>j</kbd> (_Other_)
   - Settings:
-    - `vext.useDoubleQuotesForJsStrings`: When enabled, toggling JSON to Javascript will use double quotes (instead of single quotes) for string values and keys that must be quoted.
+    - `vext.useDoubleQuotesForOutputStrings`: When enabled, Javascript or YAML results will use double quotes (instead of single quotes) for string values and keys as required.
+  - Notes:
+    - YAML will NOT be output when:
+      - it's a single-line selection
+      - the first line (of a multi-line selection) is preceded by non-whitespace characters
 ***
 
 - `Toggle Variable Naming Format`: Toggle a variable/identifier format between camel, snake, pascal, kebab, etc.

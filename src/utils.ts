@@ -1,6 +1,7 @@
-import { Match } from 'types';
+import { JsonObjectOrArray, Match } from 'types';
 import * as vscode from 'vscode';
 import { parse } from 'comment-json';
+import _ = require('lodash');
 
 // Some error types used to drive user messages (see handleError below)
 export class UserError extends Error {}
@@ -104,7 +105,7 @@ export function isWord(text: string, extraWordChars: string[]): boolean {
 /**
  * Parse a JSON string and return JSON object, stripping comments if present.
  */
-export function parseJsonStripComments<T extends Record<string, unknown>>(jsonStr: string): T {
+export function parseJsonStripComments<T extends JsonObjectOrArray>(jsonStr: string): T {
     return parse(jsonStr, undefined, true) as unknown as T;
 }
 
@@ -134,4 +135,38 @@ function getWordsRegex(extraWordChars: string[], matchFullLine: boolean): RegExp
         regexStr = `^${regexStr}$`;
     }
     return new RegExp(regexStr, 'g');
+}
+
+type CollectTxFunction<T, R> = (el: T, idx: number) => R | undefined;
+
+function collectHelper<T, R>(arr: T[], tx: CollectTxFunction<T, R>, firstOnly: false): R[];
+function collectHelper<T, R>(arr: T[], tx: CollectTxFunction<T, R>, firstOnly: true): R | undefined;
+function collectHelper<T, R>(arr: T[], tx: CollectTxFunction<T, R>, firstOnly: boolean): R[] | R | undefined {
+    const res: R[] = [];
+    _.forEach(arr, (el, idx) => {
+        const transformed = tx(el, idx);
+        if (transformed) {
+            res.push(transformed);
+            if (firstOnly) {
+                return false;
+            }
+        }
+    });
+    return firstOnly ? res[0] : res;
+}
+
+export function collect<T, R>(arr: T[], tx: CollectTxFunction<T, R>): R[] {
+    return collectHelper<T, R>(arr, tx, false);
+}
+
+export function collectFirst<T, R>(arr: T[], tx: CollectTxFunction<T, R>): R | undefined {
+    return collectHelper<T, R>(arr, tx, true);
+}
+
+/**
+ * Create new array with all elements moved n positions to the right.
+ */
+export function rotate<T>(arr: T[], n: number): T[] {
+    n = n % arr.length;
+    return arr.slice(n, arr.length).concat(arr.slice(0, n));
 }

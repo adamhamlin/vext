@@ -44,8 +44,8 @@
 				"title": "Toggle Variable Naming Format"
 			},
 			{
-				"command": "vext.toggleJsonToJs",
-				"title": "Toggle JSON to Javascript"
+				"command": "vext.toggleJsonToJsToYaml",
+				"title": "Toggle JSON to Javascript to YAML"
 			}
 		],
 		"keybindings": [
@@ -70,7 +70,7 @@
 				"mac": "cmd+alt+v"
 			},
 			{
-				"command": "vext.toggleJsonToJs",
+				"command": "vext.toggleJsonToJsToYaml",
 				"key": "ctrl+alt+j",
 				"mac": "cmd+alt+j"
 			}
@@ -124,10 +124,10 @@
 					],
 					"description": "Variable naming formats to toggle between. 'kebabUpper' is also available."
 				},
-				"vext.useDoubleQuotesForJsStrings": {
+				"vext.useDoubleQuotesForOutputStrings": {
 					"type": "boolean",
 					"default": false,
-					"description": "When enabled, toggling JSON to Javascript will use double quotes (instead of single quotes) for string values and keys that must be quoted."
+					"description": "When enabled, Javascript or YAML results will use double quotes (instead of single quotes) for string values and keys as required."
 				}
 			}
 		}
@@ -137,7 +137,7 @@
 		"onCommand:vext.toggleQuotes",
 		"onCommand:vext.toggleCase",
 		"onCommand:vext.toggleVariableNamingFormat",
-		"onCommand:vext.toggleJsonToJs"
+		"onCommand:vext.toggleJsonToJsToYaml"
 	],
 	"dependencies": {
 		"@types/lodash": "^4.14.172",
@@ -148,7 +148,8 @@
 		"lodash": "^4.17.21",
 		"module-alias": "^2.2.2",
 		"multilang-extract-comments": "^0.4.0",
-		"typescript": "^4.3.2"
+		"typescript": "^4.7.4",
+		"yaml": "^2.1.1"
 	},
 	"devDependencies": {
 		"@types/chai": "^4.2.22",
@@ -156,13 +157,13 @@
 		"@types/dedent": "^0.7.0",
 		"@types/glob": "^7.1.3",
 		"@types/mocha": "^8.2.2",
-		"@typescript-eslint/eslint-plugin": "^4.26.0",
-		"@typescript-eslint/parser": "^4.26.0",
+		"@typescript-eslint/eslint-plugin": "^5.30.6",
+		"@typescript-eslint/parser": "^5.30.6",
 		"@vscode/test-electron": "^2.1.3",
 		"chai": "^4.3.4",
 		"chai-as-promised": "^7.1.1",
 		"dedent": "^0.7.0",
-		"eslint": "^7.27.0",
+		"eslint": "^8.5.0",
 		"glob": "^7.1.7",
 		"glob-promise": "^4.2.2",
 		"mocha": "^9.2.2"

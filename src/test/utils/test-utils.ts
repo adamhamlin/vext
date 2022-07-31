@@ -46,12 +46,20 @@ export async function openEditorWithContentAndSetCursor(language: string | undef
  *
  * @param language the language for the document. Use undefined to not specify a language
  * @param content the string content of the document
- * @param start the column position to start the selection
- * @param end the column position to end the selection
+ * @param start the column position on first line to start the selection
+ * @param end the column position on last line to end the selection
+ * @param startLine the index of the first line in the selection
+ * @param numLines the total number of lines in desired selection
  */
- export async function openEditorWithContentAndHighlightSelection(language: string | undefined, content: string, start: number, end: number): Promise<vscode.TextEditor> {
+ export async function openEditorWithContentAndHighlightSelection(language: string | undefined, content: string, start: number, end: number, startLine = 0, numLines = 1): Promise<vscode.TextEditor> {
     const editor = await openEditorWithContent(language, content);
+    if (startLine > 0) {
+        await vscode.commands.executeCommand('cursorMove', { to: 'down', value: startLine });
+    }
     await vscode.commands.executeCommand('cursorMove', { to: 'right', by: 'character', value: start});
+    if (numLines > 1) {
+        await vscode.commands.executeCommand('cursorMove', { to: 'down', value: numLines - 1, select: true});
+    }
     await vscode.commands.executeCommand('cursorMove', { to: 'right', by: 'character', value: end - start, select: true});
     return editor;
 }
