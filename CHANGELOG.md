@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.4.0](https://github.com/adamhamlin/vext/compare/v0.3.1...v0.4.0) (2022-07-31)
+
+
+### Features
+
+* Support YAML for toggleJsonToJs (renamed to toggleJsonToJsToYaml) ([#22](https://github.com/adamhamlin/vext/issues/22)) ([31be19d](https://github.com/adamhamlin/vext/commit/31be19d48e55d288862613a68bb608858327520d))
+
+
+### Bug Fixes
+
+* Fix quoting behavior when cursor at end of word ([#21](https://github.com/adamhamlin/vext/issues/21)) ([b247472](https://github.com/adamhamlin/vext/commit/b247472693d78d3bb49a4f0eb9639247fab6a495))
+
 ### [0.3.1](https://github.com/adamhamlin/vext/compare/v0.3.0...v0.3.1) (2022-04-18)
 
 ## [0.3.0](https://github.com/adamhamlin/vext/compare/v0.2.1...v0.3.0) (2022-04-18)
