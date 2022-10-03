@@ -31,10 +31,10 @@ export async function handleError(fn: () => Promise<void>): Promise<void> {
 }
 
 /**
- * Replace the editor's current selection text with the provided new text.
+ * Replace the specified selection with the provided new text.
  */
-export async function replaceEditorSelection(editor: vscode.TextEditor, newText: string): Promise<boolean> {
-    return editor.edit(builder => builder.replace(editor.selection, newText));
+export async function replaceEditorSelection(editor: vscode.TextEditor, newText: string, selection: vscode.Selection): Promise<boolean> {
+    return editor.edit(builder => builder.replace(selection, newText));
 }
 
 /**
@@ -139,13 +139,20 @@ function getWordsRegex(extraWordChars: string[], matchFullLine: boolean): RegExp
 
 type CollectTxFunction<T, R> = (el: T, idx: number) => R | undefined;
 
-function collectHelper<T, R>(arr: T[], tx: CollectTxFunction<T, R>, firstOnly: false): R[];
-function collectHelper<T, R>(arr: T[], tx: CollectTxFunction<T, R>, firstOnly: true): R | undefined;
-function collectHelper<T, R>(arr: T[], tx: CollectTxFunction<T, R>, firstOnly: boolean): R[] | R | undefined {
+function collectHelper<T, R>(arr: T[], tx: CollectTxFunction<T, R>, firstOnly: false, haltOnError: boolean): R[];
+function collectHelper<T, R>(arr: T[], tx: CollectTxFunction<T, R>, firstOnly: true, haltOnError: boolean): R | undefined;
+function collectHelper<T, R>(arr: T[], tx: CollectTxFunction<T, R>, firstOnly: boolean, haltOnError: boolean): R[] | R | undefined {
     const res: R[] = [];
     _.forEach(arr, (el, idx) => {
-        const transformed = tx(el, idx);
-        if (transformed) {
+        let transformed: R | undefined;
+        try {
+            transformed = tx(el, idx);
+        } catch (err) {
+            if (haltOnError) {
+                throw err;
+            }
+        }
+        if (transformed !== undefined) {
             res.push(transformed);
             if (firstOnly) {
                 return false;
@@ -155,12 +162,12 @@ function collectHelper<T, R>(arr: T[], tx: CollectTxFunction<T, R>, firstOnly: b
     return firstOnly ? res[0] : res;
 }
 
-export function collect<T, R>(arr: T[], tx: CollectTxFunction<T, R>): R[] {
-    return collectHelper<T, R>(arr, tx, false);
+export function collect<T, R>(arr: T[], tx: CollectTxFunction<T, R>, haltOnError = false): R[] {
+    return collectHelper<T, R>(arr, tx, false, haltOnError);
 }
 
-export function collectFirst<T, R>(arr: T[], tx: CollectTxFunction<T, R>): R | undefined {
-    return collectHelper<T, R>(arr, tx, true);
+export function collectFirst<T, R>(arr: T[], tx: CollectTxFunction<T, R>, haltOnError = false): R | undefined {
+    return collectHelper<T, R>(arr, tx, true, haltOnError);
 }
 
 /**

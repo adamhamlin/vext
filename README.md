@@ -15,6 +15,7 @@ Simple VS Code Extension to toggle text features! With `vext` commands you can..
 
 - `Toggle Comment Type`: Toggle a selection between a block comment, a line comment, and uncommented text. It's language-aware!
 
+  // TODO UPDATE
   ![Comment Demo](resources/demos/comment.gif)
   - Keybinding: <kbd>Cmd</kbd>+<kbd>Opt</kbd>+<kbd>t</kbd> (_Mac_), <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>t</kbd> (_Other_)
   - Settings:

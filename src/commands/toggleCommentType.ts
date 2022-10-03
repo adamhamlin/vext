@@ -21,7 +21,7 @@ export async function toggleCommentType(editor: vscode.TextEditor): Promise<void
         const availableCommentTypes = comment.getAvailableCommentTypes();
         const newCommentType = getNextElement(availableCommentTypes, comment.getType());
         const newText = comment.toCommentString(newCommentType);
-        await replaceEditorSelection(editor, newText);
+        await replaceEditorSelection(editor, newText, comment.selection);
         if (shouldAutoFormat()) {
             await invokeDependencyCommand(DependencyCommand.REWRAP_COMMENT, 'in order to auto-format comments (see setting autoFormatOnToggleCommentType)');
         }
