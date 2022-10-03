@@ -4,19 +4,25 @@ import { EXTENSION_NAME } from '../commands';
 import { getCurrentLang, parseJsonStripComments, UserError } from '../utils';
 import { basename } from 'path';
 
-export type CommentConfig = {
+type IndividualCommentConfig = {
     line: string,
     blockStart: string,
     blockMiddle: string,
     blockEnd: string
-}
+};
+
+export type CommentConfig = {
+    standard: IndividualCommentConfig;
+    display: IndividualCommentConfig;
+    regex: IndividualCommentConfig;
+};
 
 type LanguageConfiguration = {
     comments: {
         blockComment: string[];
         lineComment: string;
     }
-}
+};
 
 // Supported configuration properties
 export const AUTO_FORMAT_ON_COMMENT_TOGGLE = 'autoFormatOnToggleCommentType';
@@ -49,11 +55,26 @@ export async function getCommentConfigForLanguage(): Promise<CommentConfig> {
     const blockComment = commentConfig.blockComment || ['', ''];
     // We'll special case the /* ... */ block style to make it look nice
     const isJavaScriptStyle = blockComment[0] === '/*';
+
     const res = {
-        line: commentConfig.lineComment + ' ',
-        blockStart: isJavaScriptStyle ? '/**' : blockComment[0],
-        blockMiddle: isJavaScriptStyle ? ' * ' : '',
-        blockEnd: isJavaScriptStyle ? ' */' : blockComment[1]
+        standard: {
+            line: commentConfig.lineComment,
+            blockStart: blockComment[0],
+            blockMiddle: '',
+            blockEnd: blockComment[1]
+        },
+        display: {
+            line: commentConfig.lineComment + ' ',
+            blockStart: isJavaScriptStyle ? '/**' : blockComment[0],
+            blockMiddle: isJavaScriptStyle ? ' * ' : '',
+            blockEnd: isJavaScriptStyle ? ' */' : blockComment[1]
+        },
+        regex: {
+            line: _.escapeRegExp(commentConfig.lineComment),
+            blockStart: isJavaScriptStyle ? `${_.escapeRegExp('/**')}?` : _.escapeRegExp(blockComment[0]),
+            blockMiddle: isJavaScriptStyle ? `${_.escapeRegExp('*')}?` : '',
+            blockEnd: isJavaScriptStyle ? _.escapeRegExp('*/') : _.escapeRegExp(blockComment[1])
+        }
     };
     languageToCommentConfigCache[language] = res;
     return res;
