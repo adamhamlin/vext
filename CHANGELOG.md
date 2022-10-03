@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0](https://github.com/adamhamlin/vext/compare/v0.4.0...v0.5.0) (2022-10-03)
+
+
+### Features
+
+* Detect comments without highlighting ([#23](https://github.com/adamhamlin/vext/issues/23)) ([b3634de](https://github.com/adamhamlin/vext/commit/b3634de68bfa343bd4251dff57fc51ea0caca30a))
+
 ## [0.4.0](https://github.com/adamhamlin/vext/compare/v0.3.1...v0.4.0) (2022-07-31)
 
 
