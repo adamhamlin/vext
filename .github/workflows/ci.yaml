@@ -21,11 +21,19 @@ jobs:
       with:
         node-version: 16.x
     - run: npm ci
-    - run: xvfb-run -a npm test
+    - name: Run Tests (Linux)
       if: runner.os == 'Linux'
+      uses: nick-fields/retry@v2.8.1
+      with:
+        command: xvfb-run -a npm test
+        max_attempts: 3
       env:
         TESTING: true
-    - run: npm test
+    - name: Run Tests (MacOS/Windows)
       if: runner.os != 'Linux'
+      uses: nick-fields/retry@v2.8.1
+      with:
+        command: npm test
+        max_attempts: 3
       env:
         TESTING: true
