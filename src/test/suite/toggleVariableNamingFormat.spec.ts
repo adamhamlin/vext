@@ -172,7 +172,6 @@ describe('toggleVariableNamingFormat cycles the naming format of a word', () => 
         });
 
         it('invalid naming format specified', async () => {
-            const invalidQuoteCharMsg = 'All configured quote characters must be strings of length 1 and cannot be special regex characters!';
             const editor = await openEditorWithContentAndSetCursor(
                 'javascript',
                 'const msg = "this is a simple string";',

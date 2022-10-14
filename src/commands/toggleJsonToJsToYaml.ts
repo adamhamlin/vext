@@ -4,7 +4,7 @@ import * as YAML from 'yaml';
 import * as _ from 'lodash';
 import { collectFirst, handleError, isHighlightedSelection, parseJsonStripComments, rotate, UserError } from '../utils';
 import { getConfig, USE_DOUBLE_QUOTES_FOR_OUTPUT_STRINGS } from '../configuration';
-import { JsonObjectOrArray } from 'types';
+import { JsonObjectOrArray } from '../types';
 
 export const TOGGLE_JSON_TO_JS_TO_YAML = 'toggleJsonToJsToYaml';
 
