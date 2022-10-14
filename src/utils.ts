@@ -1,4 +1,4 @@
-import { JsonObjectOrArray, Match } from 'types';
+import { JsonObjectOrArray, Match } from './types';
 import * as vscode from 'vscode';
 import { parse } from 'comment-json';
 import _ = require('lodash');

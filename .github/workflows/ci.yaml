@@ -1,0 +1,31 @@
+# Derived from https://code.visualstudio.com/api/working-with-extensions/continuous-integration#github-actions
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16.x
+    - run: npm ci
+    - run: xvfb-run -a npm test
+      if: runner.os == 'Linux'
+      env:
+        TESTING: true
+    - run: npm test
+      if: runner.os != 'Linux'
+      env:
+        TESTING: true

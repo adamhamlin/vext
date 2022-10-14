@@ -11,7 +11,8 @@ export async function run(): Promise<void> {
 	// Create the mocha instance
 	const mocha = new Mocha({
 		ui: 'bdd',
-		color: true
+		color: true,
+		timeout: 6000
 	});
 
 	const testsRoot = path.resolve(__dirname, '..');

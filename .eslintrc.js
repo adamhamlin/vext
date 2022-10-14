@@ -13,7 +13,7 @@ module.exports = {
     parserOptions: {
         ecmaVersion: 13,
         sourceType: 'module',
-        project: '../tsconfig.json',
+        project: './tsconfig.json',
     },
     rules: {
         'no-return-await': 'off',

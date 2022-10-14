@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { getCursorWordAsSelection, getNextElement, handleError, isHighlightedSelection, isWord, UserError } from '../utils';
 import { getConfig, QUOTE_CHARS } from '../configuration';
 import * as _ from 'lodash';
-import { Match } from 'types';
+import { Match } from '../types';
 
 export const TOGGLE_QUOTES_CMD = 'toggleQuotes';
 
