@@ -2,6 +2,8 @@
 
 ![Vext Icon](resources/vext-icon.png)
 
+[![CI Status Badge](https://github.com/adamhamlin/vext/actions/workflows/ci.yaml/badge.svg)](https://github.com/adamhamlin/vext/actions/workflows/ci.yaml)
+
 Simple VS Code Extension to toggle text features! With `vext` commands you can...
 
 ***
