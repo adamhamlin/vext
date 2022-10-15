@@ -32,7 +32,7 @@
                 "${workspaceFolder}/src"
             ],
             "env": {
-                "TESTING": "true"
+                "VEXT_TESTING": "true"
 			},
             "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
             "skipFiles": [

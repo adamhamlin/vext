@@ -7,7 +7,7 @@ import _ = require('lodash');
 export class UserError extends Error {}
 export class UserWarning extends Error {}
 
-const isTesting = process.env.TESTING === 'true';
+const isTesting = process.env.VEXT_TESTING === 'true';
 
 
 /**

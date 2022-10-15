@@ -20,7 +20,7 @@ async function main() {
 			extensionDevelopmentPath,
 			extensionTestsPath,
 			extensionTestsEnv: {
-				TESTING: 'true'
+				VEXT_TESTING: 'true'
 			},
 			launchArgs: [workspacePath]
 		});

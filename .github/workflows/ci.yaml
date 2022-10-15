@@ -38,7 +38,7 @@ jobs:
         max_attempts: 3
         timeout_minutes: 6
       env:
-        TESTING: true
+        VEXT_TESTING: true
 
     - name: Run Tests (MacOS/Windows)
       if: runner.os != 'Linux'
@@ -48,7 +48,7 @@ jobs:
         max_attempts: 3
         timeout_minutes: 6
       env:
-        TESTING: true
+        VEXT_TESTING: true
 
     - name: Publish
       # Note: Conditioning on os type too so we don't publish 3 times
