@@ -4,10 +4,13 @@
 name: CI
 
 on:
+  pull_request:
   push:
     branches:
       - main
-  pull_request:
+  release:
+    types:
+    - published
 
 jobs:
   build:
@@ -18,11 +21,15 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+
     - name: Install Node.js
       uses: actions/setup-node@v3
       with:
         node-version: 16.x
-    - run: npm ci
+
+    - name: Install dependencies
+      run: npm ci
+
     - name: Run Tests (Linux)
       if: runner.os == 'Linux'
       uses: nick-fields/retry@v2.8.1
@@ -32,6 +39,7 @@ jobs:
         timeout_minutes: 6
       env:
         TESTING: true
+
     - name: Run Tests (MacOS/Windows)
       if: runner.os != 'Linux'
       uses: nick-fields/retry@v2.8.1
@@ -41,3 +49,10 @@ jobs:
         timeout_minutes: 6
       env:
         TESTING: true
+
+    - name: Publish
+      # Note: Conditioning on os type too so we don't publish 3 times
+      if: success() && startsWith(github.ref, 'refs/tags/') && matrix.os == 'ubuntu-latest'
+      run: npm run deploy
+      env:
+        VSCE_PAT: ${{ secrets.VSCE_PAT }}

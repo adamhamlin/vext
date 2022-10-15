@@ -58,6 +58,12 @@ Vext works best when you can quickly execute/re-execute these commands, so using
 
 See `launch.json` for configurations to run the extension or to run the test suite.
 
+## CI/CD
+
+Using Github Actions, the CI build will run on all pull requests, pushes/merges to main, and on publish of a Github release. A Github release will also trigger publish of the extension to the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=fourorfive.vext).
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/) and [standard-version](https://github.com/conventional-changelog/standard-version) to facilitate versioning and changelogs.
+
 ## Future Work
 - Support default quote characters by language
 - Support quotes that use a different opening/closing characters
