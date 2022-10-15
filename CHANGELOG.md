@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.1](https://github.com/adamhamlin/vext/compare/v0.5.0...v0.5.1) (2022-10-15)
+
+
+### Bug Fixes
+
+* Change env var `TESTING` -> `VEXT_TESTING` ([#27](https://github.com/adamhamlin/vext/issues/27)) ([931e20e](https://github.com/adamhamlin/vext/commit/931e20e29021a31764b0055c03b81168f57953a6))
+
 ## [0.5.0](https://github.com/adamhamlin/vext/compare/v0.4.0...v0.5.0) (2022-10-03)
 
 
