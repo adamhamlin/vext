@@ -34,7 +34,13 @@ export async function handleError(fn: () => Promise<void>): Promise<void> {
  * Replace the specified selection with the provided new text.
  */
 export async function replaceEditorSelection(editor: vscode.TextEditor, newText: string, selection: vscode.Selection): Promise<boolean> {
-    return editor.edit(builder => builder.replace(selection, newText));
+    const shouldRemoveHighlighting = !isHighlightedSelection(editor.selection);
+    const success = await editor.edit(builder => builder.replace(selection, newText));
+    if (success && shouldRemoveHighlighting) {
+        // The edit may have introduced unwanted highlighting
+        removeHighlighting(editor);
+    }
+    return success;
 }
 
 /**
@@ -114,6 +120,13 @@ export function parseJsonStripComments<T extends JsonObjectOrArray>(jsonStr: str
  */
 export function isHighlightedSelection(selection: vscode.Selection): boolean {
     return (selection.start.character !== selection.end.character) || (selection.start.line !== selection.end.line);
+}
+
+/**
+ * Removes any active editor highlighting and leaves cursor in the current position.
+ */
+export function removeHighlighting(editor: vscode.TextEditor) {
+    editor.selections = editor.selections.map(s => new vscode.Selection(s.active, s.active));
 }
 
 /**

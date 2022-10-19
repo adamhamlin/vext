@@ -14,6 +14,7 @@ module.exports = {
         ecmaVersion: 13,
         sourceType: 'module',
         project: './tsconfig.json',
+        tsconfigRootDir: __dirname,
     },
     rules: {
         'no-return-await': 'off',
