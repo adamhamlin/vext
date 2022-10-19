@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { getCursorWordAsSelection, getNextElement, handleError, isHighlightedSelection, isWord, UserError } from '../utils';
+import { getCursorWordAsSelection, getNextElement, handleError, isHighlightedSelection, isWord, removeHighlighting, UserError } from '../utils';
 import { getConfig, QUOTE_CHARS } from '../configuration';
 import * as _ from 'lodash';
 import { Match } from '../types';
@@ -128,7 +128,7 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
 
             // Sometimes non-highlighted selections can become highlighted after replacement--which can lead to undesirable behavior.
             // Make a note of this now so we can undo it afterwards (only need to check first selection)
-            const removeHighlighting = !isHighlightedSelection(editor.selections[0]);
+            const shouldRemoveHighlighting = !isHighlightedSelection(editor.selection);
 
             await editor.edit(builder => {
                 for (const quote of quotesToReplace) {
@@ -136,8 +136,8 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
                 }
             });
 
-            if (removeHighlighting) {
-                editor.selections = editor.selections.map(s => new vscode.Selection(s.active, s.active));
+            if (shouldRemoveHighlighting) {
+                removeHighlighting(editor);
             }
         } else {
             // I don't know if this can happen
