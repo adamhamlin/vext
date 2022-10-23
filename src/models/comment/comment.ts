@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as _ from 'lodash';
-import { CommentConfig, getCommentConfigForLanguage } from '../configuration';
-import { CommentFinder } from './comment/commentFinder';
+import { CommentConfig, getCommentConfigForLanguage } from '../../configuration';
+import { CommentFinder } from './commentFinder';
 
 export enum CommentType {
     BLOCK_COMMENT = 'multiline',
