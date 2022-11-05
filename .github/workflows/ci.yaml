@@ -50,7 +50,8 @@ jobs:
       if: runner.os != 'Linux'
       uses: nick-fields/retry@v2.8.1
       with:
-        command: npm run test-ci
+        # c8 coverage doesn't work right on windows, so we'll only use `npm run test-ci` for linux
+        command: npm test
         max_attempts: 3
         timeout_minutes: 6
       env:
