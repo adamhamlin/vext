@@ -1,5 +1,6 @@
-import * as vscode from 'vscode';
-import * as _ from 'lodash';
+import _ from 'lodash';
+import vscode from 'vscode';
+
 import { CommentConfig, getCommentConfigForLanguage } from '../../configuration';
 import { CommentFinder } from './commentFinder';
 

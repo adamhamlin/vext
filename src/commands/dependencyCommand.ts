@@ -1,4 +1,5 @@
-import * as vscode from 'vscode';
+import vscode from 'vscode';
+
 import { UserWarning } from '../utils';
 
 export enum DependencyExtension {
@@ -27,11 +28,17 @@ const CommandToExtensionMap = {
  * @param cmd the name of the command to execute.
  * @param explanation (optional) message snippet explaining what this command is needed for if it cannot be executed.
  */
- export async function invokeDependencyCommand<T>(cmd: DependencyCommand, explanation: string = ''): Promise<T | undefined> {
+export async function invokeDependencyCommand<T>(cmd: DependencyCommand, explanation: string = ''): Promise<T | undefined> {
     const extensionName = CommandToExtensionMap[cmd];
     await ensureExtensionActivated(extensionName, explanation);
     return vscode.commands.executeCommand(cmd);
+}
 
+/**
+ * Clear activated extensions cache. For testing only.
+ */
+export function clearActivatedExtensionsCache() {
+    activatedExtensions.clear();
 }
 
 /**

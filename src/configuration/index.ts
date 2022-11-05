@@ -1,8 +1,11 @@
-import * as vscode from 'vscode';
-import * as _ from 'lodash';
+import { basename } from 'path';
+
+import _ from 'lodash';
+import vscode from 'vscode';
+
 import { EXTENSION_NAME } from '../commands';
 import { getCurrentLang, parseJsonStripComments, UserError } from '../utils';
-import { basename } from 'path';
+
 
 type IndividualCommentConfig = {
     line: string,
@@ -36,7 +39,7 @@ export const USE_DOUBLE_QUOTES_FOR_OUTPUT_STRINGS = 'useDoubleQuotesForOutputStr
  */
 export function getConfig<T>(key: string, configurationName = EXTENSION_NAME): T {
     const configValue: T | undefined = vscode.workspace.getConfiguration(configurationName).get(key);
-    if (_.isUndefined(configValue)) {
+    if (configValue === undefined) {
         throw new UserError(`No value found for the configuration key ${key}.`);
     }
     return _.cloneDeep(configValue);
@@ -89,7 +92,8 @@ export function shouldAutoFormat(): boolean {
     return getConfig<boolean>(AUTO_FORMAT_ON_COMMENT_TOGGLE) && getCurrentLang() !== 'plaintext';
 }
 
-async function getLanguageConfigurationJson(language: string = getCurrentLang()): Promise<LanguageConfiguration> {
+// NOTE: Exported for tests only
+export async function getLanguageConfigurationJson(language: string = getCurrentLang()): Promise<LanguageConfiguration> {
     // Languages are represented as extensions
     const languageExtensionName = `vscode.${language}`;
     try {
@@ -98,7 +102,7 @@ async function getLanguageConfigurationJson(language: string = getCurrentLang())
             throw new Error(`Could not find extension '${languageExtensionName}'`);
         }
         const extensionUri = extension.extensionUri;
-        const configurationFilePath = _.get(_.find(extension.packageJSON.contributes.languages, lang => lang.id === language), 'configuration');
+        const configurationFilePath = _.find(extension.packageJSON.contributes.languages, lang => lang.id === language)?.configuration;
         if (!configurationFilePath) {
             throw new Error(`Could not find a configuration file for ${language}`);
         }

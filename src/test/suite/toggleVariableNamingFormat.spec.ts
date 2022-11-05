@@ -1,15 +1,13 @@
-import * as vscode from 'vscode';
-import * as chai from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
-import * as dedent from 'dedent';
+import { expect } from 'chai';
+import dedent from 'dedent';
+import _ from 'lodash';
+import vscode from 'vscode';
+
+import { EXTENSION_NAME } from '../../commands';
 import { toggleVariableNamingFormat } from '../../commands/toggleVariableNamingFormat';
 import { VARIABLE_NAMING_FORMATS, getConfig } from '../../configuration';
-import { openEditorWithContent, openEditorWithContentAndSetCursor } from '../utils/test-utils';
-import { EXTENSION_NAME } from '../../commands';
-import _ = require('lodash');
+import { openEditorWithContent, openEditorWithContentAndSelectAll, openEditorWithContentAndSetCursor } from '../utils/test-utils';
 
-const expect = chai.expect;
-chai.use(chaiAsPromised);
 
 
 describe('toggleVariableNamingFormat cycles the naming format of a word', () => {
@@ -141,6 +139,14 @@ describe('toggleVariableNamingFormat cycles the naming format of a word', () => 
             'const Some_W'.length
         );
         await expect(toggleVariableNamingFormat(editor)).to.be.rejectedWith('Current word does not match any expected variable naming format!');
+    });
+
+    it('error when multi-line selection', async () => {
+        const editor = await openEditorWithContentAndSelectAll('typescript', dedent`
+            var1
+            var2
+        `);
+        await expect(toggleVariableNamingFormat(editor)).to.be.rejectedWith('Cannot process multi-line selection! However, multi-line cursors are supported.');
     });
 
     describe('variableNamingFormats configuration', async () => {

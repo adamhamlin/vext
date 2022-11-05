@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+import vscode from 'vscode';
 
 /**
  * Open a text document with the given language/content and make it the active document.

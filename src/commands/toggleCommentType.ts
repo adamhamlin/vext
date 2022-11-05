@@ -1,8 +1,9 @@
-import * as vscode from 'vscode';
-import { getNextElement, handleError, replaceEditorSelection } from '../utils';
-import { Comment } from '../models/comment';
-import { shouldAutoFormat } from '../configuration';
+import vscode from 'vscode';
+
 import { DependencyCommand, invokeDependencyCommand } from '../commands/dependencyCommand';
+import { shouldAutoFormat } from '../configuration';
+import { Comment } from '../models/comment/comment';
+import { getNextElement, handleError, replaceEditorSelection } from '../utils';
 
 export const TOGGLE_COMMENT_TYPE_CMD = 'toggleCommentType';
 

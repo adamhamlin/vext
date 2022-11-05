@@ -5,10 +5,13 @@ module.exports = {
     parser: '@typescript-eslint/parser',
     plugins: [
         '@typescript-eslint',
+        'import',
     ],
     extends: [
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
+        'plugin:import/recommended',
+        'plugin:import/typescript',
     ],
     parserOptions: {
         ecmaVersion: 13,
@@ -32,7 +35,27 @@ module.exports = {
                 caughtErrorsIgnorePattern: '^_',
             },
         ],
-        'semi': [2, 'always'],
+        'import/no-named-as-default-member': 'off',
+        'import/no-unresolved': ['error', { ignore: ['^vscode$'] }],
+        'import/order': [
+            'error',
+            {
+            groups: [
+                'builtin', // Built-in imports (come from NodeJS native) go first
+                'external', // <- External imports
+                'internal', // <- Absolute imports
+                ['sibling', 'parent'], // <- Relative imports, the sibling and parent types they can be mingled together
+                'index', // <- index imports
+                'unknown', // <- unknown
+            ],
+            'newlines-between': 'always',
+            alphabetize: {
+                order: 'asc',
+                caseInsensitive: true,
+            },
+            },
+        ],
+        'semi': ['error', 'always'],
         'quotes': ['error', 'single', { 'allowTemplateLiterals': true }],
     }
 };

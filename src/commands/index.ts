@@ -1,9 +1,10 @@
-import * as vscode from 'vscode';
-import { toggleCommentType, TOGGLE_COMMENT_TYPE_CMD } from './toggleCommentType';
-import { toggleQuotes, TOGGLE_QUOTES_CMD } from './toggleQuotes';
+import vscode from 'vscode';
+
 import { toggleCase, TOGGLE_CASE_CMD } from './toggleCase';
-import { toggleVariableNamingFormat, TOGGLE_VARIABLE_NAMING_FORMAT_CMD } from './toggleVariableNamingFormat';
+import { toggleCommentType, TOGGLE_COMMENT_TYPE_CMD } from './toggleCommentType';
 import { toggleJsonToJsToYaml, TOGGLE_JSON_TO_JS_TO_YAML } from './toggleJsonToJsToYaml';
+import { toggleQuotes, TOGGLE_QUOTES_CMD } from './toggleQuotes';
+import { toggleVariableNamingFormat, TOGGLE_VARIABLE_NAMING_FORMAT_CMD } from './toggleVariableNamingFormat';
 
 export const EXTENSION_NAME = 'vext';
 

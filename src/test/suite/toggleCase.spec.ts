@@ -1,15 +1,13 @@
-import * as vscode from 'vscode';
-import * as chai from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
-import * as dedent from 'dedent';
+import { expect } from 'chai';
+import dedent from 'dedent';
+import _ from 'lodash';
+import vscode from 'vscode';
+
+import { EXTENSION_NAME } from '../../commands';
 import { toggleCase } from '../../commands/toggleCase';
 import { CASE_EXTRA_WORD_CHARS, getConfig } from '../../configuration';
 import { openEditorWithContent, openEditorWithContentAndSelectAll, openEditorWithContentAndSetCursor } from '../utils/test-utils';
-import { EXTENSION_NAME } from '../../commands';
-import _ = require('lodash');
 
-const expect = chai.expect;
-chai.use(chaiAsPromised);
 
 
 describe('toggleCase cycles the case of a selection or word', () => {

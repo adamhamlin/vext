@@ -1,7 +1,8 @@
-import * as vscode from 'vscode';
-import { getCursorWordAsSelection, getNextElement, handleError, UserError } from '../utils';
+import _ from 'lodash';
+import vscode from 'vscode';
+
 import { VARIABLE_NAMING_FORMATS, getConfig } from '../configuration';
-import * as _ from 'lodash';
+import { getCursorWordAsSelection, getNextElement, handleError, UserError } from '../utils';
 
 export const TOGGLE_VARIABLE_NAMING_FORMAT_CMD = 'toggleVariableNamingFormat';
 
@@ -70,6 +71,7 @@ export async function toggleVariableNamingFormat(editor: vscode.TextEditor): Pro
                     builder.replace(selection, newText);
                 }
             });
+        /* c8 ignore next 4 */
         } else {
             // I don't know if this can happen
             throw Error('No selections found!');

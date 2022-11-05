@@ -1,4 +1,5 @@
-import * as vscode from 'vscode';
+import vscode from 'vscode';
+
 import { registerAllCommands } from './commands';
 
 // THIS IS THE EXTENSION ENTRY POINT
