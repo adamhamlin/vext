@@ -1,6 +1,9 @@
-import * as path from 'path';
-import * as Mocha from 'mocha';
-import * as glob from 'glob-promise';
+import path from 'path';
+
+import glob from 'glob-promise';
+import Mocha from 'mocha';
+
+import { mochaHooks } from '../mocha.setup';
 
 
 /**
@@ -12,7 +15,8 @@ export async function run(): Promise<void> {
 	const mocha = new Mocha({
 		ui: 'bdd',
 		color: true,
-		timeout: 6000
+		timeout: 6000,
+		rootHooks: mochaHooks
 	});
 
 	const testsRoot = path.resolve(__dirname, '..');
@@ -24,9 +28,9 @@ export async function run(): Promise<void> {
 
 	// Run the tests
 	await new Promise((resolve, reject) => {
-		mocha.run(failures => {
-			if (failures > 0) {
-				reject(new Error(`${failures} tests failed.`));
+		mocha.run((failureCount) => {
+			if (failureCount > 0) {
+				reject(new Error(`${failureCount} tests failed.`));
 			} else {
 				resolve(null);
 			}

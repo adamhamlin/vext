@@ -1,7 +1,8 @@
-import * as vscode from 'vscode';
-import { getCursorWordAsSelection, handleError, isHighlightedSelection } from '../utils';
+import _ from 'lodash';
+import vscode from 'vscode';
+
 import { CASE_EXTRA_WORD_CHARS, getConfig } from '../configuration';
-import * as _ from 'lodash';
+import { getCursorWordAsSelection, handleError, isHighlightedSelection } from '../utils';
 
 export const TOGGLE_CASE_CMD = 'toggleCase';
 
@@ -38,6 +39,7 @@ export async function toggleCase(editor: vscode.TextEditor): Promise<void> {
                     builder.replace(selection, newText);
                 }
             });
+        /* c8 ignore next 4 */
         } else {
             // I don't know if this can happen
             throw Error('No selections found!');

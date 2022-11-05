@@ -1,8 +1,9 @@
-import * as vscode from 'vscode';
-import { getCursorWordAsSelection, getNextElement, handleError, isHighlightedSelection, isWord, removeHighlighting, UserError } from '../utils';
+import _ from 'lodash';
+import vscode from 'vscode';
+
 import { getConfig, QUOTE_CHARS } from '../configuration';
-import * as _ from 'lodash';
 import { Match } from '../types';
+import { getCursorWordAsSelection, getNextElement, handleError, isHighlightedSelection, isWord, removeHighlighting, UserError } from '../utils';
 
 export const TOGGLE_QUOTES_CMD = 'toggleQuotes';
 
@@ -86,19 +87,15 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
                 if (!quoteMatch) {
                     try {
                         const cursorWordSelection = getCursorWordAsSelection(editor, selection, extraWordChars);
-                        if (cursorWordSelection) {
-                            quoteMatch = {
-                                startLine: lineNumber,
-                                endLine: lineNumber,
-                                start: cursorWordSelection.start.character,
-                                end: cursorWordSelection.end.character,
-                                innerText: editor.document.getText(cursorWordSelection),
-                                quoteChar: '',
-                                allowUnquoted: true
-                            };
-                        } else {
-                            throw new Error('catch me!');
-                        }
+                        quoteMatch = {
+                            startLine: lineNumber,
+                            endLine: lineNumber,
+                            start: cursorWordSelection.start.character,
+                            end: cursorWordSelection.end.character,
+                            innerText: editor.document.getText(cursorWordSelection),
+                            quoteChar: '',
+                            allowUnquoted: true
+                        };
                     } catch (err) {
                         throw new UserError('Cursor must be located within a properly-quoted string or unquoted word! If a backtick string, it cannot contain templating.');
                     }
@@ -139,6 +136,7 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
             if (shouldRemoveHighlighting) {
                 removeHighlighting(editor);
             }
+        /* c8 ignore next 4 */
         } else {
             // I don't know if this can happen
             throw Error('No selections found!');

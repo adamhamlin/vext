@@ -1,15 +1,13 @@
-import * as vscode from 'vscode';
-import * as chai from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
-import * as dedent from 'dedent';
+import { expect } from 'chai';
+import dedent from 'dedent';
+import _ from 'lodash';
+import vscode from 'vscode';
+
+import { EXTENSION_NAME } from '../../commands';
 import { toggleJsonToJsToYaml } from '../../commands/toggleJsonToJsToYaml';
 import { getConfig, USE_DOUBLE_QUOTES_FOR_OUTPUT_STRINGS } from '../../configuration';
-import { openEditorWithContentAndHighlightSelection, openEditorWithContentAndSelectAll, openEditorWithContentAndSetCursor } from '../utils/test-utils';
-import { EXTENSION_NAME } from '../../commands';
-import _ = require('lodash');
+import { openEditorWithContent, openEditorWithContentAndHighlightSelection, openEditorWithContentAndSelectAll, openEditorWithContentAndSetCursor } from '../utils/test-utils';
 
-const expect = chai.expect;
-chai.use(chaiAsPromised);
 
 
 /**
@@ -330,6 +328,17 @@ describe('toggleJsonToJsToYaml cycles between strict JSON, Javascript, and YAML 
             `const obj = `.length,
             `const obj = { sum: 4 + 5 }`.length
         );
+        await expect(toggleJsonToJsToYaml(editor)).to.be.rejectedWith(usageError);
+    });
+
+    it('error when multiple cursors', async () => {
+        const editor = await openEditorWithContent('javascript', dedent`
+            { a: 'A' }
+            { b: 'B' }
+        `);
+        for (const _iter of _.times(2)) {
+            await vscode.commands.executeCommand('editor.action.insertCursorBelow');
+        }
         await expect(toggleJsonToJsToYaml(editor)).to.be.rejectedWith(usageError);
     });
 

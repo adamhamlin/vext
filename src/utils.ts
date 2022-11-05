@@ -1,7 +1,8 @@
-import { JsonObjectOrArray, Match } from './types';
-import * as vscode from 'vscode';
 import { parse } from 'comment-json';
 import _ = require('lodash');
+import vscode from 'vscode';
+
+import { JsonObjectOrArray, Match } from './types';
 
 // Some error types used to drive user messages (see handleError below)
 export class UserError extends Error {}
@@ -20,6 +21,7 @@ export async function handleError(fn: () => Promise<void>): Promise<void> {
         if (isTesting) {
             // Can't assert on toast messages, so don't swallow the error here
             throw err;
+        /* c8 ignore start */
         } else if (err instanceof UserWarning) {
             vscode.window.showWarningMessage(err.message);
         } else if (err instanceof UserError) {
@@ -27,6 +29,7 @@ export async function handleError(fn: () => Promise<void>): Promise<void> {
         } else if (err instanceof Error) {
             vscode.window.showErrorMessage(`Unexpected error: ${err.message}\n${err.stack}`);
         }
+        /* c8 ignore end */
     }
 }
 

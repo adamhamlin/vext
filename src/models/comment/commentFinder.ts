@@ -1,8 +1,9 @@
-import * as vscode from 'vscode';
-import * as _ from 'lodash';
+import _ from 'lodash';
+import vscode from 'vscode';
+
 import { CommentConfig } from '../../configuration';
 import { collect, collectFirst, isHighlightedSelection, UserError } from '../../utils';
-import { Comment, CommentType } from '../comment';
+import { Comment, CommentType } from './comment';
 
 enum ProbeDirection {
     UP = 'up',
@@ -107,6 +108,8 @@ abstract class CommentFinderPattern {
      * Get the capture group named `content` using the given regex against the given line
      */
     protected getContent(line: string, regex: RegExp): string {
+        // COVERAGE: This function obviously gets hit but the optional chaining makes branch coverage sad
+        /* c8 ignore next 5 */
         const content = line.match(regex)?.groups?.content;
         if (content === undefined) {
             // Shouldn't reach here because this won't be called until we've already found a valid comment
@@ -207,9 +210,19 @@ class LineCommentPattern extends CommentFinderPattern {
     }
 
     protected override matchesLine(line: vscode.TextLine, _probeDirection: ProbeDirection): boolean {
-        // Every line must match pattern
-        return this.regex.test(line.text) &&
-            (!this.isHighlightedSelection || this.isPartOfActiveSelection(line));
+        const isMatch = this.regex.test(line.text);
+        const isCursor = !this.isHighlightedSelection;
+        const lineIsSelected = this.isPartOfActiveSelection(line);
+
+        if (isMatch) {
+            return isCursor || lineIsSelected;
+        } else {
+            if (!isCursor && lineIsSelected) {
+                // Can't have a line in the selection that doesn't match
+                throw new InvalidCommentError();
+            }
+            return false;
+        }
     }
 
     protected override getLines(selection: vscode.Selection): string[] {

@@ -1,10 +1,11 @@
-import * as vscode from 'vscode';
-import * as JSON5 from 'json5';
-import * as YAML from 'yaml';
-import * as _ from 'lodash';
-import { collectFirst, handleError, isHighlightedSelection, parseJsonStripComments, rotate, UserError } from '../utils';
+import JSON5 from 'json5';
+import _ from 'lodash';
+import vscode from 'vscode';
+import YAML from 'yaml';
+
 import { getConfig, USE_DOUBLE_QUOTES_FOR_OUTPUT_STRINGS } from '../configuration';
 import { JsonObjectOrArray } from '../types';
+import { collectFirst, handleError, isHighlightedSelection, parseJsonStripComments, rotate, UserError } from '../utils';
 
 export const TOGGLE_JSON_TO_JS_TO_YAML = 'toggleJsonToJsToYaml';
 
@@ -81,7 +82,9 @@ abstract class SerializationFormatter {
         this.text = editor.document.getText(this.selection);
         this.isMultiLineSelection = this.selection.start.line !== this.selection.end.line;
         this.firstLine = editor.document.lineAt(this.selection.start.line);
-        this.tabSize = this.isMultiLineSelection ? +(vscode.window.activeTextEditor?.options?.tabSize || 4) : undefined;
+        /* c8 ignore next */
+        const editorTabSize = +(vscode.window.activeTextEditor?.options.tabSize || 4);
+        this.tabSize = this.isMultiLineSelection ? editorTabSize : undefined;
         this.looksLikeJsonObjectOrArray = [['{', '}'], ['[', ']']].some(([open, close]) => _.startsWith(this.text, open) && _.endsWith(this.text, close));
         this.indent = this.computeIndentation();
     }

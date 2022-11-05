@@ -1,15 +1,12 @@
-import * as vscode from 'vscode';
-import * as chai from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
-import * as dedent from 'dedent';
+import { expect } from 'chai';
+import dedent from 'dedent';
+import _ from 'lodash';
+import vscode from 'vscode';
+
+import { EXTENSION_NAME } from '../../commands';
 import { toggleQuotes } from '../../commands/toggleQuotes';
 import { getConfig, QUOTE_CHARS } from '../../configuration';
 import { openEditorWithContent, openEditorWithContentAndHighlightSelection, openEditorWithContentAndSelectAll, openEditorWithContentAndSetCursor } from '../utils/test-utils';
-import { EXTENSION_NAME } from '../../commands';
-import _ = require('lodash');
-
-const expect = chai.expect;
-chai.use(chaiAsPromised);
 
 
 /**
