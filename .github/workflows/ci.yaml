@@ -8,15 +8,6 @@ on:
   push:
     branches:
       - main
-  release:
-    types:
-    - published
-  workflow_dispatch:
-    inputs:
-      force_publish:
-        description: 'Force Publish'
-        required: true
-        default: 'false'
 
 jobs:
   build:
@@ -50,8 +41,3 @@ jobs:
         timeout_minutes: 6
       env:
         VEXT_TESTING: true
-
-    - name: Publish
-      # Note: Conditioning on os type too so we don't publish 3 times
-      if: matrix.os == 'ubuntu-latest' && success() && (startsWith(github.ref, 'refs/tags/') || github.event.inputs.force_publish == 'true')
-      run: npm run deploy -- --pat ${{ secrets.VSCE_PAT }}
