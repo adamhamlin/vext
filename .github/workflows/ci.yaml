@@ -25,16 +25,10 @@ jobs:
         os: [macos-latest, ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-
-    - name: Install Node.js
-      uses: actions/setup-node@v3
+    - name: Checkout and install Node/dependencies
+      uses: adamhamlin/checkout-node-project@9a98e32f0beb8d1e247557595e0383b44af5b6e0
       with:
         node-version: 16.x
-
-    - name: Install dependencies
-      run: npm ci
 
     - name: Run Tests (Linux)
       if: runner.os == 'Linux'
