@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.6.0](https://github.com/adamhamlin/vext/compare/v0.5.2...v0.6.0) (2022-11-07)
+
+
+### Features
+
+* Add c8 coverage reporting/minimums, fix `toggleCommentType` edge cases, organize imports ([#31](https://github.com/adamhamlin/vext/issues/31)) ([696b512](https://github.com/adamhamlin/vext/commit/696b512990128728c89f4734e3c12d72eac853fd))
+
 ### [0.5.2](https://github.com/adamhamlin/vext/compare/v0.5.1...v0.5.2) (2022-10-19)
 
 
