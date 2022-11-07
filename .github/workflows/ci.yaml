@@ -25,8 +25,8 @@ jobs:
         os: [macos-latest, ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-    - name: Checkout and install Node/dependencies
-      uses: adamhamlin/checkout-node-project@9a98e32f0beb8d1e247557595e0383b44af5b6e0
+    - name: Checkout/install
+      uses: adamhamlin/checkout-node-project@v0.1.0
       with:
         node-version: 16.x
 
