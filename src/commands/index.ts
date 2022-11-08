@@ -14,7 +14,13 @@ export function registerAllCommands(context: vscode.ExtensionContext): void {
         vscode.commands.registerTextEditorCommand(`${EXTENSION_NAME}.${TOGGLE_COMMENT_TYPE_CMD}`, toggleCommentType),
         vscode.commands.registerTextEditorCommand(`${EXTENSION_NAME}.${TOGGLE_QUOTES_CMD}`, toggleQuotes),
         vscode.commands.registerTextEditorCommand(`${EXTENSION_NAME}.${TOGGLE_CASE_CMD}`, toggleCase),
-        vscode.commands.registerTextEditorCommand(`${EXTENSION_NAME}.${TOGGLE_VARIABLE_NAMING_FORMAT_CMD}`, toggleVariableNamingFormat),
-        vscode.commands.registerTextEditorCommand(`${EXTENSION_NAME}.${TOGGLE_JSON_TO_JS_TO_YAML}`, toggleJsonToJsToYaml)
-    ].forEach(cmd => context.subscriptions.push(cmd));
+        vscode.commands.registerTextEditorCommand(
+            `${EXTENSION_NAME}.${TOGGLE_VARIABLE_NAMING_FORMAT_CMD}`,
+            toggleVariableNamingFormat
+        ),
+        vscode.commands.registerTextEditorCommand(
+            `${EXTENSION_NAME}.${TOGGLE_JSON_TO_JS_TO_YAML}`,
+            toggleJsonToJsToYaml
+        ),
+    ].forEach((cmd) => context.subscriptions.push(cmd));
 }

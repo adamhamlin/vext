@@ -61,7 +61,7 @@ See `launch.json` for configurations to run the extension or to run the test sui
 
 ## CI/CD
 
-Using Github Actions, the CI build will run on all pull requests, pushes/merges to main, and on publish of a Github release. A Github release will also trigger publish of the extension to the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=fourorfive.vext).
+Using Github Actions, the CI build will run on all pull requests and pushes/merges to main. The release build will run on publish of a Github release, which will then publish the extension to the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=fourorfive.vext).
 
 This project uses [Conventional Commits](https://www.conventionalcommits.org/) and [standard-version](https://github.com/conventional-changelog/standard-version) to facilitate versioning and changelogs.
 

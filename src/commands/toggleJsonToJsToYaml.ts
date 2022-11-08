@@ -9,7 +9,6 @@ import { collectFirst, handleError, isHighlightedSelection, parseJsonStripCommen
 
 export const TOGGLE_JSON_TO_JS_TO_YAML = 'toggleJsonToJsToYaml';
 
-
 /**
  * Toggle selection between JSON and the javascript equivalent using unquoted keys where possible.
  *
@@ -18,7 +17,9 @@ export const TOGGLE_JSON_TO_JS_TO_YAML = 'toggleJsonToJsToYaml';
 export async function toggleJsonToJsToYaml(editor: vscode.TextEditor): Promise<void> {
     await handleError(async () => {
         const useDoubleQuotesForOutputStrings = getConfig<boolean>(USE_DOUBLE_QUOTES_FOR_OUTPUT_STRINGS);
-        const usageError = new UserError('Must select a valid JSON, Javascript, or YAML object/array! Javascript may not contain expressions.');
+        const usageError = new UserError(
+            'Must select a valid JSON, Javascript, or YAML object/array! Javascript may not contain expressions.'
+        );
 
         if (editor.selections.length !== 1) {
             throw usageError;
@@ -34,7 +35,7 @@ export async function toggleJsonToJsToYaml(editor: vscode.TextEditor): Promise<v
         const formatters = [
             new JsonFormatter(editor, selection, options),
             new JavascriptFormatter(editor, selection, options),
-            new YamlFormatter(editor, selection, options)
+            new YamlFormatter(editor, selection, options),
         ];
 
         // Find the first formatter than can parse the text and then the next formatter that can stringify it
@@ -60,7 +61,7 @@ export async function toggleJsonToJsToYaml(editor: vscode.TextEditor): Promise<v
             throw usageError;
         }
 
-        await editor.edit(builder => {
+        await editor.edit((builder) => {
             builder.replace(selection, replacementText);
         });
     });
@@ -78,14 +79,21 @@ abstract class SerializationFormatter {
     protected readonly looksLikeJsonObjectOrArray: boolean;
     protected readonly indent: number;
 
-    constructor(protected readonly editor: vscode.TextEditor, protected readonly selection: vscode.Selection, protected readonly options: SerializationFormatOptions) {
+    constructor(
+        protected readonly editor: vscode.TextEditor,
+        protected readonly selection: vscode.Selection,
+        protected readonly options: SerializationFormatOptions
+    ) {
         this.text = editor.document.getText(this.selection);
         this.isMultiLineSelection = this.selection.start.line !== this.selection.end.line;
         this.firstLine = editor.document.lineAt(this.selection.start.line);
         /* c8 ignore next */
         const editorTabSize = +(vscode.window.activeTextEditor?.options.tabSize || 4);
         this.tabSize = this.isMultiLineSelection ? editorTabSize : undefined;
-        this.looksLikeJsonObjectOrArray = [['{', '}'], ['[', ']']].some(([open, close]) => _.startsWith(this.text, open) && _.endsWith(this.text, close));
+        this.looksLikeJsonObjectOrArray = [
+            ['{', '}'],
+            ['[', ']'],
+        ].some(([open, close]) => _.startsWith(this.text, open) && _.endsWith(this.text, close));
         this.indent = this.computeIndentation();
     }
 
@@ -137,7 +145,7 @@ class JavascriptFormatter extends SerializationFormatter {
             quote: this.options.useDoubleQuotesForOutputStrings ? `"` : `'`,
             space: this.tabSize,
             omitTrailingCommas: true,
-            singleLinePadding: true
+            singleLinePadding: true,
         });
     }
 }
@@ -151,12 +159,15 @@ class YamlFormatter extends SerializationFormatter {
         return YAML.parse(str);
     }
     override mayStringify(_input: JsonObjectOrArray): boolean {
-        return this.isMultiLineSelection && this.firstLine.firstNonWhitespaceCharacterIndex === this.selection.start.character;
+        return (
+            this.isMultiLineSelection &&
+            this.firstLine.firstNonWhitespaceCharacterIndex === this.selection.start.character
+        );
     }
     override doStringify(input: JsonObjectOrArray): string {
         const str = YAML.stringify(input, {
             indent: this.tabSize,
-            singleQuote: !this.options.useDoubleQuotesForOutputStrings
+            singleQuote: !this.options.useDoubleQuotesForOutputStrings,
         });
         // Remove trailing newline
         return str.trimEnd();
@@ -166,6 +177,9 @@ class YamlFormatter extends SerializationFormatter {
     }
     private removeIndent(text: string): string {
         const regex = new RegExp(`^${' '.repeat(this.indent)}`);
-        return text.split('\n').map(line => line.replace(regex, '')).join('\n');
+        return text
+            .split('\n')
+            .map((line) => line.replace(regex, ''))
+            .join('\n');
     }
 }

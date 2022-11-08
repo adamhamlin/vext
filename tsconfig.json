@@ -1,24 +1,14 @@
 {
-	"compilerOptions": {
-		"module": "commonjs",
-		"esModuleInterop": true,
-		"target": "es2019",
-		"lib": [
-			"es2019"
-		],
-		"outDir": "out",
-		"typeRoots": [
-			"./node_modules/@types"
-		],
-		"sourceMap": true,
-		"skipLibCheck": true,
-		"strict": true   /* enable all strict type-checking options */
-	},
-	"exclude": [
-		"node_modules",
-		".vscode-test",
-		"scratch",
-		"resources",
-		"out"
-	]
+    "compilerOptions": {
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "target": "es2019",
+        "lib": ["es2019"],
+        "outDir": "out",
+        "typeRoots": ["./node_modules/@types"],
+        "sourceMap": true,
+        "skipLibCheck": true,
+        "strict": true /* enable all strict type-checking options */
+    },
+    "exclude": ["node_modules", ".vscode-test", "scratch", "resources", "out"]
 }

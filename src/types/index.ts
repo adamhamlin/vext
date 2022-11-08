@@ -9,6 +9,6 @@ export interface Match {
 /**
  * A "close enough" approximation of JSON/a javascript object.
  */
-type Json = string | number | boolean | null | {[key: string]: Json} | Json[];
+type Json = string | number | boolean | null | { [key: string]: Json } | Json[];
 
-export type JsonObjectOrArray = {[key: string]: Json} | Json[];
+export type JsonObjectOrArray = { [key: string]: Json } | Json[];

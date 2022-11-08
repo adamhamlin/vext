@@ -6,7 +6,6 @@ import { getCursorWordAsSelection, handleError, isHighlightedSelection } from '.
 
 export const TOGGLE_CASE_CMD = 'toggleCase';
 
-
 /**
  * When cursor is in the middle of a word--or there is an explicit selection--toggle the casing used.
  *
@@ -33,13 +32,13 @@ export async function toggleCase(editor: vscode.TextEditor): Promise<void> {
             // Use first selection to drive casing decision for all others
             const transformFn = getCaseTransformFn(editor.document.getText(selectionsToToggle[0]));
 
-            await editor.edit(builder => {
+            await editor.edit((builder) => {
                 for (const selection of selectionsToToggle) {
                     const newText = transformFn(editor.document.getText(selection));
                     builder.replace(selection, newText);
                 }
             });
-        /* c8 ignore next 4 */
+            /* c8 ignore next 4 */
         } else {
             // I don't know if this can happen
             throw Error('No selections found!');

@@ -4,22 +4,22 @@ import { UserWarning } from '../utils';
 
 export enum DependencyExtension {
     VS_CODE_INTERNAL = 'vsCodeInternal',
-    REWRAP = 'rewrap'
+    REWRAP = 'rewrap',
 }
 
 const DependencyExtensionIdMap = {
     [DependencyExtension.VS_CODE_INTERNAL]: 'vscode',
-    [DependencyExtension.REWRAP]: 'stkb.rewrap'
+    [DependencyExtension.REWRAP]: 'stkb.rewrap',
 };
 
 const activatedExtensions: Set<DependencyExtension> = new Set([DependencyExtension.VS_CODE_INTERNAL]);
 
 export enum DependencyCommand {
-    REWRAP_COMMENT = 'rewrap.rewrapComment'
+    REWRAP_COMMENT = 'rewrap.rewrapComment',
 }
 
 const CommandToExtensionMap = {
-    [DependencyCommand.REWRAP_COMMENT]: DependencyExtension.REWRAP
+    [DependencyCommand.REWRAP_COMMENT]: DependencyExtension.REWRAP,
 };
 
 /**
@@ -28,7 +28,10 @@ const CommandToExtensionMap = {
  * @param cmd the name of the command to execute.
  * @param explanation (optional) message snippet explaining what this command is needed for if it cannot be executed.
  */
-export async function invokeDependencyCommand<T>(cmd: DependencyCommand, explanation: string = ''): Promise<T | undefined> {
+export async function invokeDependencyCommand<T>(
+    cmd: DependencyCommand,
+    explanation: string = ''
+): Promise<T | undefined> {
     const extensionName = CommandToExtensionMap[cmd];
     await ensureExtensionActivated(extensionName, explanation);
     return vscode.commands.executeCommand(cmd);
@@ -37,7 +40,7 @@ export async function invokeDependencyCommand<T>(cmd: DependencyCommand, explana
 /**
  * Clear activated extensions cache. For testing only.
  */
-export function clearActivatedExtensionsCache() {
+export function clearActivatedExtensionsCache(): void {
     activatedExtensions.clear();
 }
 

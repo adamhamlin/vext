@@ -12,6 +12,7 @@ module.exports = {
         'plugin:@typescript-eslint/recommended',
         'plugin:import/recommended',
         'plugin:import/typescript',
+        'prettier',
     ],
     parserOptions: {
         ecmaVersion: 13,
@@ -22,8 +23,9 @@ module.exports = {
     rules: {
         'no-return-await': 'off',
         '@typescript-eslint/return-await': ['error', 'in-try-catch'],
-        '@typescript-eslint/no-explicit-any': 2,
-        '@typescript-eslint/explicit-module-boundary-types': 0,
+        '@typescript-eslint/no-explicit-any': 'error',
+        '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
         '@typescript-eslint/no-non-null-assertion': 0,
         '@typescript-eslint/no-inferrable-types': 0,
         '@typescript-eslint/no-unused-vars': [

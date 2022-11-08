@@ -7,7 +7,7 @@ import { CommentFinder } from './commentFinder';
 export enum CommentType {
     BLOCK_COMMENT = 'multiline',
     LINE_COMMENT = 'singleline',
-    NO_COMMENT = 'none'
+    NO_COMMENT = 'none',
 }
 
 /**
@@ -52,14 +52,14 @@ export class Comment {
     private toBlockCommentString(lines: string[]): string {
         const newLines = [
             this.config.display.blockStart,
-            ...lines.map(line => `${this.config.display.blockMiddle}${line}`),
-            this.config.display.blockEnd
+            ...lines.map((line) => `${this.config.display.blockMiddle}${line}`),
+            this.config.display.blockEnd,
         ];
         return this.linesToString(newLines);
     }
 
     private toLineCommentString(lines: string[]): string {
-        const newLines = lines.map(line => `${this.config.display.line}${line}`);
+        const newLines = lines.map((line) => `${this.config.display.line}${line}`);
         return this.linesToString(newLines);
     }
 
@@ -68,9 +68,7 @@ export class Comment {
     }
 
     private linesToString(linesToOutput: string[]): string {
-        return linesToOutput.map((line) => {
-            return (this.indentation + line).trimEnd();
-        }).join('\n');
+        return linesToOutput.map((line) => (this.indentation + line).trimEnd()).join('\n');
     }
 
     /**

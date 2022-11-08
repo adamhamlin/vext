@@ -7,7 +7,7 @@ import vscode from 'vscode';
  * @param content the string content of the document
  */
 export async function openEditorWithContent(language: string | undefined, content: string): Promise<vscode.TextEditor> {
-    const document = await vscode.workspace.openTextDocument({content, language});
+    const document = await vscode.workspace.openTextDocument({ content, language });
     const editor = await vscode.window.showTextDocument(document);
     return editor;
 }
@@ -18,7 +18,10 @@ export async function openEditorWithContent(language: string | undefined, conten
  * @param language the language for the document. Use undefined to not specify a language
  * @param content the string content of the document
  */
-export async function openEditorWithContentAndSelectAll(language: string | undefined, content: string): Promise<vscode.TextEditor> {
+export async function openEditorWithContentAndSelectAll(
+    language: string | undefined,
+    content: string
+): Promise<vscode.TextEditor> {
     const editor = await openEditorWithContent(language, content);
     await vscode.commands.executeCommand('editor.action.selectAll');
     return editor;
@@ -33,9 +36,13 @@ export async function openEditorWithContentAndSelectAll(language: string | undef
  * @param content the string content of the document
  * @param cursorPosition the column position to set the cursor
  */
-export async function openEditorWithContentAndSetCursor(language: string | undefined, content: string, cursorPosition: number): Promise<vscode.TextEditor> {
+export async function openEditorWithContentAndSetCursor(
+    language: string | undefined,
+    content: string,
+    cursorPosition: number
+): Promise<vscode.TextEditor> {
     const editor = await openEditorWithContent(language, content);
-    await vscode.commands.executeCommand('cursorMove', { to: 'right', by: 'character', value: cursorPosition});
+    await vscode.commands.executeCommand('cursorMove', { to: 'right', by: 'character', value: cursorPosition });
     return editor;
 }
 
@@ -51,15 +58,27 @@ export async function openEditorWithContentAndSetCursor(language: string | undef
  * @param startLine the index of the first line in the selection
  * @param numLines the total number of lines in desired selection
  */
- export async function openEditorWithContentAndHighlightSelection(language: string | undefined, content: string, start: number, end: number, startLine = 0, numLines = 1): Promise<vscode.TextEditor> {
+export async function openEditorWithContentAndHighlightSelection(
+    language: string | undefined,
+    content: string,
+    start: number,
+    end: number,
+    startLine = 0,
+    numLines = 1
+): Promise<vscode.TextEditor> {
     const editor = await openEditorWithContent(language, content);
     if (startLine > 0) {
         await vscode.commands.executeCommand('cursorMove', { to: 'down', value: startLine });
     }
-    await vscode.commands.executeCommand('cursorMove', { to: 'right', by: 'character', value: start});
+    await vscode.commands.executeCommand('cursorMove', { to: 'right', by: 'character', value: start });
     if (numLines > 1) {
-        await vscode.commands.executeCommand('cursorMove', { to: 'down', value: numLines - 1, select: true});
+        await vscode.commands.executeCommand('cursorMove', { to: 'down', value: numLines - 1, select: true });
     }
-    await vscode.commands.executeCommand('cursorMove', { to: 'right', by: 'character', value: end - start, select: true});
+    await vscode.commands.executeCommand('cursorMove', {
+        to: 'right',
+        by: 'character',
+        value: end - start,
+        select: true,
+    });
     return editor;
 }

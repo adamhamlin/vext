@@ -3,7 +3,15 @@ import vscode from 'vscode';
 
 import { getConfig, QUOTE_CHARS } from '../configuration';
 import { Match } from '../types';
-import { getCursorWordAsSelection, getNextElement, handleError, isHighlightedSelection, isWord, removeHighlighting, UserError } from '../utils';
+import {
+    getCursorWordAsSelection,
+    getNextElement,
+    handleError,
+    isHighlightedSelection,
+    isWord,
+    removeHighlighting,
+    UserError,
+} from '../utils';
 
 export const TOGGLE_QUOTES_CMD = 'toggleQuotes';
 
@@ -32,10 +40,9 @@ type QuoteMatch = Match & {
     allowUnquoted: boolean;
 };
 type QuoteReplacement = {
-    selection: vscode.Selection,
-    replacementText: string
-}
-
+    selection: vscode.Selection;
+    replacementText: string;
+};
 
 /**
  * When cursor is in the middle of a quoted string, toggle the quote characters used.
@@ -48,19 +55,21 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
         const extraWordChars: string[] = []; // TODO: Make this configurable?
         for (const char of quoteChars) {
             if (_.escapeRegExp(char).length !== 1) {
-                throw new UserError('All configured quote characters must be strings of length 1 and cannot be special regex characters!');
+                throw new UserError(
+                    'All configured quote characters must be strings of length 1 and cannot be special regex characters!'
+                );
             }
         }
 
         // Will have multiple selections if multi-line cursor is used
-        const quoteMatches: QuoteMatch[] = editor.selections.map(selection => {
+        const quoteMatches: QuoteMatch[] = editor.selections.map((selection) => {
             let quoteMatch: QuoteMatch | undefined;
 
             if (isHighlightedSelection(selection)) {
                 // Just toggle quotes around the entire selection
                 const regexStr = `^([${quoteChars.join('')}])[\\s|\\S]*\\1$`;
                 const selectionText = editor.document.getText(selection);
-                const quoteChar = (new RegExp(regexStr)).exec(selectionText)?.[1] || '';
+                const quoteChar = new RegExp(regexStr).exec(selectionText)?.[1] || '';
                 const innerText = quoteChar ? selectionText.substring(1, selectionText.length - 1) : selectionText;
                 quoteMatch = {
                     startLine: selection.start.line,
@@ -69,7 +78,7 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
                     end: selection.end.character,
                     innerText,
                     quoteChar,
-                    allowUnquoted: true
+                    allowUnquoted: true,
                 };
             } else {
                 // Try to extrapolate a properly-quoted string around the current cursor position
@@ -77,7 +86,7 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
                 const lineText = editor.document.lineAt(lineNumber).text;
                 const matches = getQuotedStrings(lineText, lineNumber, quoteChars, extraWordChars);
                 const cursorPosition = selection.active.character;
-                quoteMatch = matches.find(match => {
+                quoteMatch = matches.find((match) => {
                     // Cursor must be anywhere within the quote or immediately before/after
                     return cursorPosition >= match.start && cursorPosition <= match.end;
                 });
@@ -94,32 +103,28 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
                             end: cursorWordSelection.end.character,
                             innerText: editor.document.getText(cursorWordSelection),
                             quoteChar: '',
-                            allowUnquoted: true
+                            allowUnquoted: true,
                         };
                     } catch (err) {
-                        throw new UserError('Cursor must be located within a properly-quoted string or unquoted word! If a backtick string, it cannot contain templating.');
+                        throw new UserError(
+                            'Cursor must be located within a properly-quoted string or unquoted word! If a backtick string, it cannot contain templating.'
+                        );
                     }
                 }
-
             }
             return quoteMatch;
         });
 
         if (quoteMatches.length) {
-            if (quoteMatches.every(match => match.allowUnquoted)) {
+            if (quoteMatches.every((match) => match.allowUnquoted)) {
                 quoteChars.push('');
             }
             // We'll use first quote character as starting point so we can convert every line to the same new quote char
             const newQuoteChar = getNextElement(quoteChars, quoteMatches[0].quoteChar);
-            const quotesToReplace: QuoteReplacement[] = quoteMatches.map(match => {
+            const quotesToReplace: QuoteReplacement[] = quoteMatches.map((match) => {
                 return {
                     replacementText: getReplacementText(match, newQuoteChar),
-                    selection: new vscode.Selection(
-                        match.startLine,
-                        match.start,
-                        match.endLine,
-                        match.end
-                    )
+                    selection: new vscode.Selection(match.startLine, match.start, match.endLine, match.end),
                 };
             });
 
@@ -127,7 +132,7 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
             // Make a note of this now so we can undo it afterwards (only need to check first selection)
             const shouldRemoveHighlighting = !isHighlightedSelection(editor.selections[0]);
 
-            await editor.edit(builder => {
+            await editor.edit((builder) => {
                 for (const quote of quotesToReplace) {
                     builder.replace(quote.selection, quote.replacementText);
                 }
@@ -136,7 +141,7 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
             if (shouldRemoveHighlighting) {
                 removeHighlighting(editor);
             }
-        /* c8 ignore next 4 */
+            /* c8 ignore next 4 */
         } else {
             // I don't know if this can happen
             throw Error('No selections found!');
@@ -152,7 +157,12 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
  * @param quoteChars the quote characters to look for
  * @param extraWordChars additional characters to consider part of a word
  */
-function getQuotedStrings(line: string, lineNumber: number, quoteChars: string[], extraWordChars: string[]): QuoteMatch[] {
+function getQuotedStrings(
+    line: string,
+    lineNumber: number,
+    quoteChars: string[],
+    extraWordChars: string[]
+): QuoteMatch[] {
     // We need special handling for backticks, if configured
     const standardQuoteChars = _.without(quoteChars, '`');
     const usingBackticks = standardQuoteChars.length < quoteChars.length;
@@ -175,7 +185,7 @@ function getQuotedStrings(line: string, lineNumber: number, quoteChars: string[]
             end: match.index + matchLength,
             quoteChar: match[1] || '`',
             innerText: match[0].substring(1, matchLength - 1),
-            allowUnquoted: isWord(innerText, extraWordChars)
+            allowUnquoted: isWord(innerText, extraWordChars),
         });
     }
     return res;

@@ -12,7 +12,7 @@ enum VariableNamingFormat {
     SNAKE = 'snake',
     SNAKE_UPPER = 'snakeUpper',
     KEBAB = 'kebab',
-    KEBAB_UPPER = 'kebabUpper'
+    KEBAB_UPPER = 'kebabUpper',
 }
 type NamingFormatRegexMap = Record<VariableNamingFormat, RegExp>;
 
@@ -25,7 +25,7 @@ const supportedNamingFormats: NamingFormatRegexMap = {
     [VariableNamingFormat.SNAKE]: /^(?:[a-z][a-z0-9]*)(?:_[a-z0-9]+)*$/,
     [VariableNamingFormat.SNAKE_UPPER]: /^(?:[A-Z][A-Z0-9]*)(?:_[A-Z0-9]+)*$/,
     [VariableNamingFormat.KEBAB]: /^(?:[a-z][a-z0-9]*)(?:-[a-z0-9]+)*$/,
-    [VariableNamingFormat.KEBAB_UPPER]: /^(?:[A-Z][A-Z0-9]*)(?:-[A-Z0-9]+)*$/
+    [VariableNamingFormat.KEBAB_UPPER]: /^(?:[A-Z][A-Z0-9]*)(?:-[A-Z0-9]+)*$/,
 };
 
 /**
@@ -40,13 +40,16 @@ const CAMEL_PASCAL_SPLITTER_REGEX = /(?<!(^|[A-Z0-9]))(?=[A-Z0-9])|(?<!^)(?=[A-Z
  */
 export async function toggleVariableNamingFormat(editor: vscode.TextEditor): Promise<void> {
     await handleError(async () => {
-        const namingFormatRegexMap = getConfig<VariableNamingFormat[]>(VARIABLE_NAMING_FORMATS).reduce((accumulator, format) => {
-            if (!supportedNamingFormats[format]) {
-                throw new UserError(`Variable naming format '${format}' is not supported!`);
-            }
-            accumulator[format] = supportedNamingFormats[format];
-            return accumulator;
-        }, {} as NamingFormatRegexMap);
+        const namingFormatRegexMap = getConfig<VariableNamingFormat[]>(VARIABLE_NAMING_FORMATS).reduce(
+            (accumulator, format) => {
+                if (!supportedNamingFormats[format]) {
+                    throw new UserError(`Variable naming format '${format}' is not supported!`);
+                }
+                accumulator[format] = supportedNamingFormats[format];
+                return accumulator;
+            },
+            {} as NamingFormatRegexMap
+        );
         const selectionsToToggle: vscode.Selection[] = [];
 
         // Will have multiple selections if multi-line cursor is used
@@ -62,16 +65,23 @@ export async function toggleVariableNamingFormat(editor: vscode.TextEditor): Pro
 
         if (selectionsToToggle.length) {
             // Use first selection to drive format decision for all others
-            const currentFormat = getCurrentNamingFormat(editor.document.getText(selectionsToToggle[0]), namingFormatRegexMap);
+            const currentFormat = getCurrentNamingFormat(
+                editor.document.getText(selectionsToToggle[0]),
+                namingFormatRegexMap
+            );
             const targetFormat = getNextElement(_.keys(namingFormatRegexMap), currentFormat) as VariableNamingFormat;
 
-            await editor.edit(builder => {
+            await editor.edit((builder) => {
                 for (const selection of selectionsToToggle) {
-                    const newText = transformNamingFormat(editor.document.getText(selection), namingFormatRegexMap, targetFormat);
+                    const newText = transformNamingFormat(
+                        editor.document.getText(selection),
+                        namingFormatRegexMap,
+                        targetFormat
+                    );
                     builder.replace(selection, newText);
                 }
             });
-        /* c8 ignore next 4 */
+            /* c8 ignore next 4 */
         } else {
             // I don't know if this can happen
             throw Error('No selections found!');
@@ -96,7 +106,11 @@ function getCurrentNamingFormat(originalText: string, formatToRegexMap: NamingFo
 /**
  * Transform given text into target naming format.
  */
-function transformNamingFormat(text: string, formatToRegexMap: NamingFormatRegexMap, targetFormat: VariableNamingFormat): string {
+function transformNamingFormat(
+    text: string,
+    formatToRegexMap: NamingFormatRegexMap,
+    targetFormat: VariableNamingFormat
+): string {
     const currentFormat = getCurrentNamingFormat(text, formatToRegexMap);
 
     // Tokenize string according to current format
@@ -120,9 +134,7 @@ function transformNamingFormat(text: string, formatToRegexMap: NamingFormatRegex
     switch (targetFormat) {
         case VariableNamingFormat.CAMEL:
         case VariableNamingFormat.PASCAL: {
-            const pascal = tokenized
-                .map(token => token[0].toUpperCase() + token.substr(1).toLowerCase())
-                .join('');
+            const pascal = tokenized.map((token) => token[0].toUpperCase() + token.substr(1).toLowerCase()).join('');
             // Pascal and camel are the same except for casing of first letter
             return targetFormat === VariableNamingFormat.PASCAL ? pascal : pascal[0].toLowerCase() + pascal.substr(1);
         }

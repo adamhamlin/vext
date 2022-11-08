@@ -6,21 +6,25 @@ import vscode from 'vscode';
 import { EXTENSION_NAME } from '../../commands';
 import { toggleQuotes } from '../../commands/toggleQuotes';
 import { getConfig, QUOTE_CHARS } from '../../configuration';
-import { openEditorWithContent, openEditorWithContentAndHighlightSelection, openEditorWithContentAndSelectAll, openEditorWithContentAndSetCursor } from '../utils/test-utils';
-
+import {
+    openEditorWithContent,
+    openEditorWithContentAndHighlightSelection,
+    openEditorWithContentAndSelectAll,
+    openEditorWithContentAndSetCursor,
+} from '../utils/test-utils';
 
 /**
  * NOTE: Be sure to run these tests with --disable-extensions flag
  */
 
 describe('toggleQuotes cycles the quote characters used in a string or selection', () => {
-
     afterEach(async () => {
         await vscode.commands.executeCommand('workbench.action.closeAllEditors');
     });
 
     describe('cursor-only -- no highlighted selections', () => {
-        const badCursorPositionMsg = 'Cursor must be located within a properly-quoted string or unquoted word! If a backtick string, it cannot contain templating.';
+        const badCursorPositionMsg =
+            'Cursor must be located within a properly-quoted string or unquoted word! If a backtick string, it cannot contain templating.';
 
         it('basic usage', async () => {
             const editor = await openEditorWithContentAndSetCursor(
@@ -50,6 +54,7 @@ describe('toggleQuotes cycles the quote characters used in a string or selection
             );
             await toggleQuotes(editor);
             expect(editor.document.getText()).to.equal(
+                // prettier-ignore
                 'const msg = `The quick, brown ${animal} jumps ${preposition + \'the lazy\'} dog`;'
             );
             await toggleQuotes(editor);
@@ -69,21 +74,13 @@ describe('toggleQuotes cycles the quote characters used in a string or selection
                 '// Something I want to use qu'.length
             );
             await toggleQuotes(editor);
-            expect(editor.document.getText()).to.equal(
-                `// Something I want to use "quotes" on...`
-            );
+            expect(editor.document.getText()).to.equal(`// Something I want to use "quotes" on...`);
             await toggleQuotes(editor);
-            expect(editor.document.getText()).to.equal(
-                `// Something I want to use 'quotes' on...`
-            );
+            expect(editor.document.getText()).to.equal(`// Something I want to use 'quotes' on...`);
             await toggleQuotes(editor);
-            expect(editor.document.getText()).to.equal(
-                `// Something I want to use \`quotes\` on...`
-            );
+            expect(editor.document.getText()).to.equal(`// Something I want to use \`quotes\` on...`);
             await toggleQuotes(editor);
-            expect(editor.document.getText()).to.equal(
-                `// Something I want to use quotes on...`
-            );
+            expect(editor.document.getText()).to.equal(`// Something I want to use quotes on...`);
         });
 
         it('correct behavior when cursor is at end of word', async () => {
@@ -93,30 +90,25 @@ describe('toggleQuotes cycles the quote characters used in a string or selection
                 '// Something I want to use quotes'.length
             );
             await toggleQuotes(editor);
-            expect(editor.document.getText()).to.equal(
-                `// Something I want to use "quotes" on...`
-            );
+            expect(editor.document.getText()).to.equal(`// Something I want to use "quotes" on...`);
             await toggleQuotes(editor);
-            expect(editor.document.getText()).to.equal(
-                `// Something I want to use 'quotes' on...`
-            );
+            expect(editor.document.getText()).to.equal(`// Something I want to use 'quotes' on...`);
             await toggleQuotes(editor);
-            expect(editor.document.getText()).to.equal(
-                `// Something I want to use \`quotes\` on...`
-            );
+            expect(editor.document.getText()).to.equal(`// Something I want to use \`quotes\` on...`);
             await toggleQuotes(editor);
-            expect(editor.document.getText()).to.equal(
-                `// Something I want to use quotes on...`
-            );
+            expect(editor.document.getText()).to.equal(`// Something I want to use quotes on...`);
         });
 
         it('multiple cursors - all selections use quote character from first selection', async () => {
-            const editor = await openEditorWithContent('javascript', dedent`
+            const editor = await openEditorWithContent(
+                'javascript',
+                dedent`
                 "string1"
                 'string 2'
                 \`string 3\`
                 "string 4"
-            `);
+            `
+            );
             for (const _iter of _.times(3)) {
                 await vscode.commands.executeCommand('editor.action.insertCursorBelow');
             }
@@ -147,11 +139,14 @@ describe('toggleQuotes cycles the quote characters used in a string or selection
         });
 
         it('multiple cursors - toggling quotes off allowed when all strings are considered words', async () => {
-            const editor = await openEditorWithContent('javascript', dedent`
+            const editor = await openEditorWithContent(
+                'javascript',
+                dedent`
                 "string1"
                 'string2'
                 \`string3\`
-            `);
+            `
+            );
             for (const _iter of _.times(4)) {
                 await vscode.commands.executeCommand('editor.action.insertCursorBelow');
             }
@@ -219,17 +214,14 @@ describe('toggleQuotes cycles the quote characters used in a string or selection
                     'const truth = & M\\&Ms'.length
                 );
                 await toggleQuotes(editor);
-                expect(editor.document.getText()).to.equal(
-                    `const truth = % M&Ms are 100\\% tops %;`
-                );
+                expect(editor.document.getText()).to.equal(`const truth = % M&Ms are 100\\% tops %;`);
                 await toggleQuotes(editor);
-                expect(editor.document.getText()).to.equal(
-                    `const truth = & M\\&Ms are 100% tops &;`
-                );
+                expect(editor.document.getText()).to.equal(`const truth = & M\\&Ms are 100% tops &;`);
             });
 
             it('invalid alternative quote chars', async () => {
-                const invalidQuoteCharMsg = 'All configured quote characters must be strings of length 1 and cannot be special regex characters!';
+                const invalidQuoteCharMsg =
+                    'All configured quote characters must be strings of length 1 and cannot be special regex characters!';
                 const editor = await openEditorWithContentAndSetCursor(
                     'javascript',
                     'const msg = "this is a simple string";',
@@ -254,28 +246,23 @@ describe('toggleQuotes cycles the quote characters used in a string or selection
                 `{ 'key'`.length
             );
             await toggleQuotes(editor);
-            expect(editor.document.getText()).to.equal(
-                `{ \`key\`: 'some value' }`
-            );
+            expect(editor.document.getText()).to.equal(`{ \`key\`: 'some value' }`);
             await toggleQuotes(editor);
-            expect(editor.document.getText()).to.equal(
-                `{ key: 'some value' }`
-            );
+            expect(editor.document.getText()).to.equal(`{ key: 'some value' }`);
             await toggleQuotes(editor);
-            expect(editor.document.getText()).to.equal(
-                `{ "key": 'some value' }`
-            );
+            expect(editor.document.getText()).to.equal(`{ "key": 'some value' }`);
             await toggleQuotes(editor);
-            expect(editor.document.getText()).to.equal(
-                `{ 'key': 'some value' }`
-            );
+            expect(editor.document.getText()).to.equal(`{ 'key': 'some value' }`);
         });
 
         it('multiline selection', async () => {
-            const editor = await openEditorWithContentAndSelectAll('typescript', dedent`
+            const editor = await openEditorWithContentAndSelectAll(
+                'typescript',
+                dedent`
                 It's gonna be a bright, bright
                 "sunshine-y" day.
-            `);
+            `
+            );
             await toggleQuotes(editor);
             expect(editor.document.getText(editor.selection)).to.equal(dedent`
                 "It's gonna be a bright, bright

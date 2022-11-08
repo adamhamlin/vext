@@ -6,12 +6,11 @@ import vscode from 'vscode';
 import { EXTENSION_NAME } from '../commands';
 import { getCurrentLang, parseJsonStripComments, UserError } from '../utils';
 
-
 type IndividualCommentConfig = {
-    line: string,
-    blockStart: string,
-    blockMiddle: string,
-    blockEnd: string
+    line: string;
+    blockStart: string;
+    blockMiddle: string;
+    blockEnd: string;
 };
 
 export type CommentConfig = {
@@ -24,7 +23,7 @@ type LanguageConfiguration = {
     comments: {
         blockComment: string[];
         lineComment: string;
-    }
+    };
 };
 
 // Supported configuration properties
@@ -64,20 +63,20 @@ export async function getCommentConfigForLanguage(): Promise<CommentConfig> {
             line: commentConfig.lineComment,
             blockStart: blockComment[0],
             blockMiddle: '',
-            blockEnd: blockComment[1]
+            blockEnd: blockComment[1],
         },
         display: {
             line: commentConfig.lineComment + ' ',
             blockStart: isJavaScriptStyle ? '/**' : blockComment[0],
             blockMiddle: isJavaScriptStyle ? ' * ' : '',
-            blockEnd: isJavaScriptStyle ? ' */' : blockComment[1]
+            blockEnd: isJavaScriptStyle ? ' */' : blockComment[1],
         },
         regex: {
             line: _.escapeRegExp(commentConfig.lineComment),
             blockStart: isJavaScriptStyle ? `${_.escapeRegExp('/**')}?` : _.escapeRegExp(blockComment[0]),
             blockMiddle: isJavaScriptStyle ? `${_.escapeRegExp('*')}?` : '',
-            blockEnd: isJavaScriptStyle ? _.escapeRegExp('*/') : _.escapeRegExp(blockComment[1])
-        }
+            blockEnd: isJavaScriptStyle ? _.escapeRegExp('*/') : _.escapeRegExp(blockComment[1]),
+        },
     };
     languageToCommentConfigCache[language] = res;
     return res;
@@ -93,7 +92,9 @@ export function shouldAutoFormat(): boolean {
 }
 
 // NOTE: Exported for tests only
-export async function getLanguageConfigurationJson(language: string = getCurrentLang()): Promise<LanguageConfiguration> {
+export async function getLanguageConfigurationJson(
+    language: string = getCurrentLang()
+): Promise<LanguageConfiguration> {
     // Languages are represented as extensions
     const languageExtensionName = `vscode.${language}`;
     try {
@@ -102,7 +103,10 @@ export async function getLanguageConfigurationJson(language: string = getCurrent
             throw new Error(`Could not find extension '${languageExtensionName}'`);
         }
         const extensionUri = extension.extensionUri;
-        const configurationFilePath = _.find(extension.packageJSON.contributes.languages, lang => lang.id === language)?.configuration;
+        const configurationFilePath = _.find(
+            extension.packageJSON.contributes.languages,
+            (lang) => lang.id === language
+        )?.configuration;
         if (!configurationFilePath) {
             throw new Error(`Could not find a configuration file for ${language}`);
         }
@@ -111,7 +115,11 @@ export async function getLanguageConfigurationJson(language: string = getCurrent
         const configFileText = (await vscode.workspace.fs.readFile(configFileUri)).toString();
         return parseJsonStripComments<LanguageConfiguration>(configFileText);
     } catch (err) {
-        vscode.window.showWarningMessage(`Unable to load configuration for language '${language}': ${(err as Error).message}. Falling back to javascript-style comments.`);
+        vscode.window.showWarningMessage(
+            `Unable to load configuration for language '${language}': ${
+                (err as Error).message
+            }. Falling back to javascript-style comments.`
+        );
         return getLanguageConfigurationJson('javascript');
     }
 }
