@@ -2,22 +2,23 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import vscode from 'vscode';
 
-import { invokeDependencyCommand, DependencyCommand, clearActivatedExtensionsCache } from '../../commands/dependencyCommand';
+import {
+    invokeDependencyCommand,
+    DependencyCommand,
+    clearActivatedExtensionsCache,
+} from '../../commands/dependencyCommand';
 import * as configuration from '../../configuration';
 import * as miscUtils from '../../utils';
-
 
 /**
  * Collection of miscellaneous tests not well-enough covered by core tests.
  */
 describe('Misc', () => {
-
     afterEach(async () => {
         sinon.restore();
     });
 
     describe('utils.ts', () => {
-
         describe('collect', () => {
             it('Basic usage', async () => {
                 const arr = [{ num: 3 }, { num: -4 }, { num: -5 }];
@@ -39,14 +40,19 @@ describe('Misc', () => {
 
             describe('haltOnError flag', () => {
                 const arr = [{ num: 3 }, { num: -4 }];
+                // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
                 const collectFn = (haltOnError: boolean) => {
-                    return miscUtils.collect(arr, (el) => {
-                        if (el.num >= 0) {
-                            return el.num * 2;
-                        } else {
-                            throw new Error('whoops');
-                        }
-                    }, haltOnError);
+                    return miscUtils.collect(
+                        arr,
+                        (el) => {
+                            if (el.num >= 0) {
+                                return el.num * 2;
+                            } else {
+                                throw new Error('whoops');
+                            }
+                        },
+                        haltOnError
+                    );
                 };
 
                 it('is false (default) - error should be swallowed and relevant element filtered out', async () => {
@@ -75,7 +81,6 @@ describe('Misc', () => {
     });
 
     describe('configuration.ts', () => {
-
         describe('getConfig', () => {
             it('Gets a configuration item', async () => {
                 const quoteChars = configuration.getConfig<string[]>(configuration.QUOTE_CHARS);
@@ -83,8 +88,9 @@ describe('Misc', () => {
             });
 
             it('Error when config value is not defined', async () => {
-                expect(() => configuration.getConfig<string[]>('mystery_property'))
-                    .to.throw('No value found for the configuration key mystery_property');
+                expect(() => configuration.getConfig<string[]>('mystery_property')).to.throw(
+                    'No value found for the configuration key mystery_property'
+                );
             });
         });
 
@@ -93,42 +99,42 @@ describe('Misc', () => {
                 const config = await configuration.getLanguageConfigurationJson('ruby');
                 expect(config.comments).to.deep.equal({
                     lineComment: '#',
-                    blockComment: ['=begin', '=end']
+                    blockComment: ['=begin', '=end'],
                 });
             });
 
             it('Language configuration file not found -- results in the javascript config', async () => {
-                sinon.stub(vscode.extensions, 'getExtension')
-                    .onFirstCall().returns({
+                sinon
+                    .stub(vscode.extensions, 'getExtension')
+                    .onFirstCall()
+                    .returns({
                         packageJSON: {
                             contributes: {
-                                languages: [{ id: 'not_python' }]
-                            }
-                        }
+                                languages: [{ id: 'not_python' }],
+                            },
+                        },
                     } as vscode.Extension<unknown>)
                     .callThrough();
                 const config = await configuration.getLanguageConfigurationJson('python');
                 expect(config.comments).to.deep.equal({
                     lineComment: '//',
-                    blockComment: ['/*', '*/']
+                    blockComment: ['/*', '*/'],
                 });
             });
         });
     });
 
     describe('dependencyCommand.ts', () => {
-
         describe('invokeDependencyCommand', () => {
-
             afterEach(() => clearActivatedExtensionsCache());
 
             it('Invoke rewrap.rewrapComment', async () => {
                 const stubbedExtension = vscode.extensions.getExtension('vscode.python');
-                sinon.stub(vscode.extensions, 'getExtension')
-                    .withArgs('stkb.rewrap')
-                    .returns(stubbedExtension);
+                sinon.stub(vscode.extensions, 'getExtension').withArgs('stkb.rewrap').returns(stubbedExtension);
                 const executeCommandStub = sinon.stub(vscode.commands, 'executeCommand').resolves('blah');
-                expect(await invokeDependencyCommand(DependencyCommand.REWRAP_COMMENT, 'because reasons')).to.equal('blah');
+                expect(await invokeDependencyCommand(DependencyCommand.REWRAP_COMMENT, 'because reasons')).to.equal(
+                    'blah'
+                );
                 expect(executeCommandStub).to.be.calledOnceWithExactly(DependencyCommand.REWRAP_COMMENT);
             });
         });

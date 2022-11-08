@@ -16,28 +16,28 @@ jobs:
         os: [macos-latest, ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-    - name: Checkout/install
-      uses: adamhamlin/checkout-node-project@v0.1.0
-      with:
-        node-version: 16.x
+      - name: Checkout/install
+        uses: adamhamlin/checkout-node-project@v0.1.0
+        with:
+          node-version: 16.x
 
-    - name: Run Tests (Linux)
-      if: runner.os == 'Linux'
-      uses: nick-fields/retry@v2.8.1
-      with:
-        command: xvfb-run -a npm run test-ci
-        max_attempts: 3
-        timeout_minutes: 6
-      env:
-        VEXT_TESTING: true
+      - name: Run Tests (Linux)
+        if: runner.os == 'Linux'
+        uses: nick-fields/retry@v2.8.1
+        with:
+          command: xvfb-run -a npm run test-ci
+          max_attempts: 3
+          timeout_minutes: 6
+        env:
+          VEXT_TESTING: true
 
-    - name: Run Tests (MacOS/Windows)
-      if: runner.os != 'Linux'
-      uses: nick-fields/retry@v2.8.1
-      with:
-        # c8 coverage doesn't work right on windows, so we'll only use `npm run test-ci` for linux
-        command: npm test
-        max_attempts: 3
-        timeout_minutes: 6
-      env:
-        VEXT_TESTING: true
+      - name: Run Tests (MacOS/Windows)
+        if: runner.os != 'Linux'
+        uses: nick-fields/retry@v2.8.1
+        with:
+          # c8 coverage doesn't work right on windows, so we'll only use `npm run test-ci` for linux
+          command: npm test
+          max_attempts: 3
+          timeout_minutes: 6
+        env:
+          VEXT_TESTING: true

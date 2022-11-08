@@ -5,20 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "args": [
-                "--extensionDevelopmentPath=${workspaceFolder}",
-                "--disable-extensions",
-                "${workspaceFolder}/.."
-            ],
+            "args": ["--extensionDevelopmentPath=${workspaceFolder}", "--disable-extensions", "${workspaceFolder}/.."],
             "name": "Launch Extension",
-            "outFiles": [
-                "${workspaceFolder}/out/**/*.js"
-            ],
+            "outFiles": ["${workspaceFolder}/out/**/*.js"],
             "request": "launch",
             "type": "extensionHost",
-            "skipFiles": [
-                "<node_internals>/**"
-            ]
+            "skipFiles": ["<node_internals>/**"]
         },
         {
             "name": "Test Extension",
@@ -33,11 +25,9 @@
             ],
             "env": {
                 "VEXT_TESTING": "true"
-			},
+            },
             "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
+            "skipFiles": ["<node_internals>/**"]
         }
     ]
 }

@@ -6,23 +6,29 @@ import vscode from 'vscode';
 import { EXTENSION_NAME } from '../../commands';
 import { toggleJsonToJsToYaml } from '../../commands/toggleJsonToJsToYaml';
 import { getConfig, USE_DOUBLE_QUOTES_FOR_OUTPUT_STRINGS } from '../../configuration';
-import { openEditorWithContent, openEditorWithContentAndHighlightSelection, openEditorWithContentAndSelectAll, openEditorWithContentAndSetCursor } from '../utils/test-utils';
-
-
+import {
+    openEditorWithContent,
+    openEditorWithContentAndHighlightSelection,
+    openEditorWithContentAndSelectAll,
+    openEditorWithContentAndSetCursor,
+} from '../utils/test-utils';
 
 /**
  * NOTE: Be sure to run these tests with --disable-extensions flag
  */
 
 describe('toggleJsonToJsToYaml cycles between strict JSON, Javascript, and YAML object syntax', () => {
-    const usageError = 'Must select a valid JSON, Javascript, or YAML object/array! Javascript may not contain expressions.';
+    const usageError =
+        'Must select a valid JSON, Javascript, or YAML object/array! Javascript may not contain expressions.';
 
     afterEach(async () => {
         await vscode.commands.executeCommand('workbench.action.closeAllEditors');
     });
 
     it('basic usage -- starting with JSON', async () => {
-        const editor = await openEditorWithContentAndSelectAll('javascript', dedent`
+        const editor = await openEditorWithContentAndSelectAll(
+            'javascript',
+            dedent`
             {
                 // comments ok
                 "doubleQuotes": "it's not that hard", "singleQuotes": "actually pretty \"easy\"",
@@ -32,7 +38,8 @@ describe('toggleJsonToJsToYaml cycles between strict JSON, Javascript, and YAML 
                     "alsoIn": ["arrays"]
                 }
             }
-        `);
+        `
+        );
         await toggleJsonToJsToYaml(editor);
         expect(editor.document.getText(editor.selection)).to.equal(dedent`
             {
@@ -71,7 +78,9 @@ describe('toggleJsonToJsToYaml cycles between strict JSON, Javascript, and YAML 
     });
 
     it('basic usage -- starting with javascript', async () => {
-        const editor = await openEditorWithContentAndSelectAll('javascript', dedent`
+        const editor = await openEditorWithContentAndSelectAll(
+            'javascript',
+            dedent`
             {
                 // comments ok
                 /* block comments too */
@@ -83,7 +92,8 @@ describe('toggleJsonToJsToYaml cycles between strict JSON, Javascript, and YAML 
                 "backwardsCompatible": "with JSON",
                 trailingComma: { alsoIn: ['arrays',] },
             }
-        `);
+        `
+        );
         await toggleJsonToJsToYaml(editor);
         expect(editor.document.getText(editor.selection)).to.equal(dedent`
             doubleQuotes: it's not that hard
@@ -134,7 +144,9 @@ describe('toggleJsonToJsToYaml cycles between strict JSON, Javascript, and YAML 
     });
 
     it('basic usage -- starting with YAML', async () => {
-        const editor = await openEditorWithContentAndSelectAll('yaml', dedent`
+        const editor = await openEditorWithContentAndSelectAll(
+            'yaml',
+            dedent`
             # comments ok
             doubleQuotes: it's not that hard
             singleQuotes: actually pretty "easy"
@@ -142,7 +154,8 @@ describe('toggleJsonToJsToYaml cycles between strict JSON, Javascript, and YAML 
             trailingComma:
                 alsoIn:
                     - arrays
-        `);
+        `
+        );
         await toggleJsonToJsToYaml(editor);
         expect(editor.document.getText(editor.selection)).to.equal(dedent`
             {
@@ -285,9 +298,12 @@ describe('toggleJsonToJsToYaml cycles between strict JSON, Javascript, and YAML 
 
     it('single-line input yields single-line output', async () => {
         // NOTE: YAML will not trigger for single-line
-        const editor = await openEditorWithContentAndSelectAll('javascript', dedent`
+        const editor = await openEditorWithContentAndSelectAll(
+            'javascript',
+            dedent`
             {"first":1,"second":[2,"two"]}
-        `);
+        `
+        );
         await toggleJsonToJsToYaml(editor);
         expect(editor.document.getText(editor.selection)).to.equal(dedent`
             { first: 1, second: [2, 'two'] }
@@ -299,9 +315,12 @@ describe('toggleJsonToJsToYaml cycles between strict JSON, Javascript, and YAML 
     });
 
     it('basic usage -- array', async () => {
-        const editor = await openEditorWithContentAndSelectAll('javascript', dedent`
+        const editor = await openEditorWithContentAndSelectAll(
+            'javascript',
+            dedent`
             [{"a":"A"},{"b":"B"}]
-        `);
+        `
+        );
         await toggleJsonToJsToYaml(editor);
         expect(editor.document.getText(editor.selection)).to.equal(dedent`
             [{ a: 'A' }, { b: 'B' }]
@@ -332,10 +351,13 @@ describe('toggleJsonToJsToYaml cycles between strict JSON, Javascript, and YAML 
     });
 
     it('error when multiple cursors', async () => {
-        const editor = await openEditorWithContent('javascript', dedent`
+        const editor = await openEditorWithContent(
+            'javascript',
+            dedent`
             { a: 'A' }
             { b: 'B' }
-        `);
+        `
+        );
         for (const _iter of _.times(2)) {
             await vscode.commands.executeCommand('editor.action.insertCursorBelow');
         }
@@ -372,17 +394,22 @@ describe('toggleJsonToJsToYaml cycles between strict JSON, Javascript, and YAML 
         });
 
         after(async () => {
-            await vscode.workspace.getConfiguration(EXTENSION_NAME).update(USE_DOUBLE_QUOTES_FOR_OUTPUT_STRINGS, useDoubleQuotesConfig);
+            await vscode.workspace
+                .getConfiguration(EXTENSION_NAME)
+                .update(USE_DOUBLE_QUOTES_FOR_OUTPUT_STRINGS, useDoubleQuotesConfig);
         });
 
         it('basic usage', async () => {
             await vscode.workspace.getConfiguration(EXTENSION_NAME).update(USE_DOUBLE_QUOTES_FOR_OUTPUT_STRINGS, true);
-            const editor = await openEditorWithContentAndSelectAll('javascript', dedent`
+            const editor = await openEditorWithContentAndSelectAll(
+                'javascript',
+                dedent`
                 {
                     key: 'some value',
                     'needs-quoting': 'other value'
                 }
-            `);
+            `
+            );
             await toggleJsonToJsToYaml(editor);
             expect(editor.document.getText(editor.selection)).to.equal(dedent`
                 key: some value

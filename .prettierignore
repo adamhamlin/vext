@@ -1,0 +1,22 @@
+# Add files here to ignore them from prettier formatting
+
+# Project
+out/
+scratch/
+
+# VSCode
+.vscode-test/
+src/.vscode/
+
+# DC Cache
+.dccache
+
+# MacOS
+.DS_Store
+
+# Misc
+*.md
+.eslintrc.js
+build
+dist
+coverage

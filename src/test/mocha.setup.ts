@@ -7,5 +7,5 @@ export const mochaHooks = {
         chai.should();
         chai.use(chaiAsPromised);
         chai.use(chaiSinon);
-    }
+    },
 };

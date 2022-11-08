@@ -6,22 +6,18 @@ import vscode from 'vscode';
 import { EXTENSION_NAME } from '../../commands';
 import { toggleVariableNamingFormat } from '../../commands/toggleVariableNamingFormat';
 import { VARIABLE_NAMING_FORMATS, getConfig } from '../../configuration';
-import { openEditorWithContent, openEditorWithContentAndSelectAll, openEditorWithContentAndSetCursor } from '../utils/test-utils';
-
-
+import {
+    openEditorWithContent,
+    openEditorWithContentAndSelectAll,
+    openEditorWithContentAndSetCursor,
+} from '../utils/test-utils';
 
 describe('toggleVariableNamingFormat cycles the naming format of a word', () => {
-
     before(async () => {
         // Let's test all the supported formats
-        await vscode.workspace.getConfiguration(EXTENSION_NAME).update(VARIABLE_NAMING_FORMATS, [
-            'camel',
-            'pascal',
-            'snake',
-            'snakeUpper',
-            'kebab',
-            'kebabUpper'
-        ]);
+        await vscode.workspace
+            .getConfiguration(EXTENSION_NAME)
+            .update(VARIABLE_NAMING_FORMATS, ['camel', 'pascal', 'snake', 'snakeUpper', 'kebab', 'kebabUpper']);
     });
 
     afterEach(async () => {
@@ -37,59 +33,42 @@ describe('toggleVariableNamingFormat cycles the naming format of a word', () => 
         await toggleVariableNamingFormat(editor);
         expect(editor.document.getText()).to.equal(
             // NOTE: We've lost the original capitalization of "ID", but nothing we can really do...
-            `const SomeIdVariable45 = 14;`,
+            `const SomeIdVariable45 = 14;`
         );
         await toggleVariableNamingFormat(editor);
-        expect(editor.document.getText()).to.equal(
-            `const some_id_variable_45 = 14;`,
-        );
+        expect(editor.document.getText()).to.equal(`const some_id_variable_45 = 14;`);
         await toggleVariableNamingFormat(editor);
-        expect(editor.document.getText()).to.equal(
-            `const SOME_ID_VARIABLE_45 = 14;`,
-        );
+        expect(editor.document.getText()).to.equal(`const SOME_ID_VARIABLE_45 = 14;`);
         await toggleVariableNamingFormat(editor);
-        expect(editor.document.getText()).to.equal(
-            `const some-id-variable-45 = 14;`,
-        );
+        expect(editor.document.getText()).to.equal(`const some-id-variable-45 = 14;`);
         await toggleVariableNamingFormat(editor);
-        expect(editor.document.getText()).to.equal(
-            `const SOME-ID-VARIABLE-45 = 14;`,
-        );
+        expect(editor.document.getText()).to.equal(`const SOME-ID-VARIABLE-45 = 14;`);
         await toggleVariableNamingFormat(editor);
-        expect(editor.document.getText()).to.equal(
-            `const someIdVariable45 = 14;`,
-        );
+        expect(editor.document.getText()).to.equal(`const someIdVariable45 = 14;`);
     });
 
     it('ambiguous format just toggles between camel and pascal', async () => {
-        const editor = await openEditorWithContentAndSetCursor(
-            'javascript',
-            `const blah = 14;`,
-            `const bl`.length
-        );
+        const editor = await openEditorWithContentAndSetCursor('javascript', `const blah = 14;`, `const bl`.length);
         await toggleVariableNamingFormat(editor);
-        expect(editor.document.getText()).to.equal(
-            `const Blah = 14;`
-        );
+        expect(editor.document.getText()).to.equal(`const Blah = 14;`);
         await toggleVariableNamingFormat(editor);
-        expect(editor.document.getText()).to.equal(
-            `const blah = 14;`
-        );
+        expect(editor.document.getText()).to.equal(`const blah = 14;`);
         await toggleVariableNamingFormat(editor);
-        expect(editor.document.getText()).to.equal(
-            `const Blah = 14;`
-        );
+        expect(editor.document.getText()).to.equal(`const Blah = 14;`);
     });
 
     it('multiple cursors - all selections use casing of first selection', async () => {
-        const editor = await openEditorWithContent('javascript', dedent`
+        const editor = await openEditorWithContent(
+            'javascript',
+            dedent`
             EXOTIC_BUTTERS
             exoticButters
             exotic-butters
             ExoticButters
             EXOTIC-BUTTERS
             exotic_butters
-        `);
+        `
+        );
         for (const _iter of _.times(5)) {
             await vscode.commands.executeCommand('editor.action.insertCursorBelow');
         }
@@ -138,15 +117,22 @@ describe('toggleVariableNamingFormat cycles the naming format of a word', () => 
             'const Some_Weird-Casing = "bad"',
             'const Some_W'.length
         );
-        await expect(toggleVariableNamingFormat(editor)).to.be.rejectedWith('Current word does not match any expected variable naming format!');
+        await expect(toggleVariableNamingFormat(editor)).to.be.rejectedWith(
+            'Current word does not match any expected variable naming format!'
+        );
     });
 
     it('error when multi-line selection', async () => {
-        const editor = await openEditorWithContentAndSelectAll('typescript', dedent`
+        const editor = await openEditorWithContentAndSelectAll(
+            'typescript',
+            dedent`
             var1
             var2
-        `);
-        await expect(toggleVariableNamingFormat(editor)).to.be.rejectedWith('Cannot process multi-line selection! However, multi-line cursors are supported.');
+        `
+        );
+        await expect(toggleVariableNamingFormat(editor)).to.be.rejectedWith(
+            'Cannot process multi-line selection! However, multi-line cursors are supported.'
+        );
     });
 
     describe('variableNamingFormats configuration', async () => {
@@ -157,7 +143,9 @@ describe('toggleVariableNamingFormat cycles the naming format of a word', () => 
         });
 
         after(async () => {
-            await vscode.workspace.getConfiguration(EXTENSION_NAME).update(VARIABLE_NAMING_FORMATS, origVariableNamingFormats);
+            await vscode.workspace
+                .getConfiguration(EXTENSION_NAME)
+                .update(VARIABLE_NAMING_FORMATS, origVariableNamingFormats);
         });
 
         it('unconfigured naming formats are not used', async () => {
@@ -168,13 +156,9 @@ describe('toggleVariableNamingFormat cycles the naming format of a word', () => 
             );
             await vscode.workspace.getConfiguration(EXTENSION_NAME).update(VARIABLE_NAMING_FORMATS, ['snake', 'camel']);
             await toggleVariableNamingFormat(editor);
-            expect(editor.document.getText()).to.equal(
-                `const my_variable = 45`
-            );
+            expect(editor.document.getText()).to.equal(`const my_variable = 45`);
             await toggleVariableNamingFormat(editor);
-            expect(editor.document.getText()).to.equal(
-                `const myVariable = 45`
-            );
+            expect(editor.document.getText()).to.equal(`const myVariable = 45`);
         });
 
         it('invalid naming format specified', async () => {
@@ -184,7 +168,9 @@ describe('toggleVariableNamingFormat cycles the naming format of a word', () => 
                 'const msg = "this '.length
             );
             await vscode.workspace.getConfiguration(EXTENSION_NAME).update(VARIABLE_NAMING_FORMATS, ['camel', 'zebra']);
-            await expect(toggleVariableNamingFormat(editor)).to.be.rejectedWith(`Variable naming format 'zebra' is not supported!`);
+            await expect(toggleVariableNamingFormat(editor)).to.be.rejectedWith(
+                `Variable naming format 'zebra' is not supported!`
+            );
         });
     });
 });

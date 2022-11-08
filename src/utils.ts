@@ -10,7 +10,6 @@ export class UserWarning extends Error {}
 
 const isTesting = process.env.VEXT_TESTING === 'true';
 
-
 /**
  * Handle any error during command execution, displaying a message to the user as appropriate.
  */
@@ -21,7 +20,7 @@ export async function handleError(fn: () => Promise<void>): Promise<void> {
         if (isTesting) {
             // Can't assert on toast messages, so don't swallow the error here
             throw err;
-        /* c8 ignore start */
+            /* c8 ignore start */
         } else if (err instanceof UserWarning) {
             vscode.window.showWarningMessage(err.message);
         } else if (err instanceof UserError) {
@@ -36,9 +35,13 @@ export async function handleError(fn: () => Promise<void>): Promise<void> {
 /**
  * Replace the specified selection with the provided new text.
  */
-export async function replaceEditorSelection(editor: vscode.TextEditor, newText: string, selection: vscode.Selection): Promise<boolean> {
+export async function replaceEditorSelection(
+    editor: vscode.TextEditor,
+    newText: string,
+    selection: vscode.Selection
+): Promise<boolean> {
     const shouldRemoveHighlighting = !isHighlightedSelection(editor.selection);
-    const success = await editor.edit(builder => builder.replace(selection, newText));
+    const success = await editor.edit((builder) => builder.replace(selection, newText));
     if (success && shouldRemoveHighlighting) {
         // The edit may have introduced unwanted highlighting
         removeHighlighting(editor);
@@ -73,7 +76,11 @@ export function getNextElement<T>(arr: T[], currentValue: T): T {
  * @param selection the selection
  * @param extraWordChars additional characters to consider part of a word
  */
- export function getCursorWordAsSelection(editor: vscode.TextEditor, selection: vscode.Selection, extraWordChars: string[] = []): vscode.Selection {
+export function getCursorWordAsSelection(
+    editor: vscode.TextEditor,
+    selection: vscode.Selection,
+    extraWordChars: string[] = []
+): vscode.Selection {
     const regex = getWordsRegex(extraWordChars, false);
     const lineText = editor.document.lineAt(selection.start.line).text;
     const matches: Match[] = [];
@@ -87,19 +94,14 @@ export function getNextElement<T>(arr: T[], currentValue: T): T {
     }
 
     const cursorPosition = selection.active.character;
-    const cursorMatch = matches.find(match => {
+    const cursorMatch = matches.find((match) => {
         // Cursor must be anywhere within the word or immediately before/after
         return cursorPosition >= match.start && cursorPosition <= match.end;
     });
     if (!cursorMatch) {
         throw new UserError('Cursor must be located within a word!');
     }
-    return new vscode.Selection(
-        selection.start.line,
-        cursorMatch.start,
-        selection.start.line,
-        cursorMatch.end
-    );
+    return new vscode.Selection(selection.start.line, cursorMatch.start, selection.start.line, cursorMatch.end);
 }
 
 /**
@@ -122,14 +124,14 @@ export function parseJsonStripComments<T extends JsonObjectOrArray>(jsonStr: str
  * Returns true if the given selection is a "highlighted" selection (i.e., not just a standalone cursor)
  */
 export function isHighlightedSelection(selection: vscode.Selection): boolean {
-    return (selection.start.character !== selection.end.character) || (selection.start.line !== selection.end.line);
+    return selection.start.character !== selection.end.character || selection.start.line !== selection.end.line;
 }
 
 /**
  * Removes any active editor highlighting and leaves cursor in the current position.
  */
-export function removeHighlighting(editor: vscode.TextEditor) {
-    editor.selections = editor.selections.map(s => new vscode.Selection(s.active, s.active));
+export function removeHighlighting(editor: vscode.TextEditor): void {
+    editor.selections = editor.selections.map((s) => new vscode.Selection(s.active, s.active));
 }
 
 /**
@@ -137,9 +139,11 @@ export function removeHighlighting(editor: vscode.TextEditor) {
  */
 function getWordsRegex(extraWordChars: string[], matchFullLine: boolean): RegExp {
     // We're using a regex "character class" (i.e., brackets), so we only need to escape '^', '-', ']', and '\'
-    const escapedExtraWordChars = extraWordChars.map(char => {
+    const escapedExtraWordChars = extraWordChars.map((char) => {
         if (char.length !== 1) {
-            throw new UserError(`All configured extra word characters must have length 1! The following is invalid: '${char}'`);
+            throw new UserError(
+                `All configured extra word characters must have length 1! The following is invalid: '${char}'`
+            );
         } else if (/[\^\-\]\\]/.test(char)) {
             return '\\' + char;
         } else {
@@ -156,8 +160,18 @@ function getWordsRegex(extraWordChars: string[], matchFullLine: boolean): RegExp
 type CollectTxFunction<T, R> = (el: T, idx: number) => R | undefined;
 
 function collectHelper<T, R>(arr: T[], tx: CollectTxFunction<T, R>, firstOnly: false, haltOnError: boolean): R[];
-function collectHelper<T, R>(arr: T[], tx: CollectTxFunction<T, R>, firstOnly: true, haltOnError: boolean): R | undefined;
-function collectHelper<T, R>(arr: T[], tx: CollectTxFunction<T, R>, firstOnly: boolean, haltOnError: boolean): R[] | R | undefined {
+function collectHelper<T, R>(
+    arr: T[],
+    tx: CollectTxFunction<T, R>,
+    firstOnly: true,
+    haltOnError: boolean
+): R | undefined;
+function collectHelper<T, R>(
+    arr: T[],
+    tx: CollectTxFunction<T, R>,
+    firstOnly: boolean,
+    haltOnError: boolean
+): R[] | R | undefined {
     const res: R[] = [];
     _.forEach(arr, (el, idx) => {
         let transformed: R | undefined;

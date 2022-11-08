@@ -8,7 +8,7 @@ import { Comment, CommentType } from './comment';
 enum ProbeDirection {
     UP = 'up',
     DOWN = 'down',
-    NONE = 'none'
+    NONE = 'none',
 }
 
 /**
@@ -38,7 +38,7 @@ export class CommentFinder {
      * NOTE: Will update the active selection with the comment, if found.
      */
     async findAndSelectComment(): Promise<Comment> {
-        const comment = collectFirst(this.patterns, pattern => pattern.findAndSelectComment());
+        const comment = collectFirst(this.patterns, (pattern) => pattern.findAndSelectComment());
         if (!comment) {
             throw new UserError('Could not parse a valid comment encompassing the current line.');
         }
@@ -75,7 +75,7 @@ abstract class CommentFinderPattern {
     /**
      * @returns a list of line text with any comment-specific characters removed.
      */
-    protected abstract getLines(selection: vscode.Selection): string[]
+    protected abstract getLines(selection: vscode.Selection): string[];
 
     /**
      * Get the editor's line at the given line index
@@ -98,10 +98,8 @@ abstract class CommentFinderPattern {
      *
      * @param regexStr the comment prefix pattern. Note: special characters should already be escaped.
      */
-     protected buildRegex(regexStr: string): RegExp {
-        return new RegExp(
-            `^(?<indentation>\\s*)(?<commentPrefix>${regexStr}) ?(?<content>.*)$`
-        );
+    protected buildRegex(regexStr: string): RegExp {
+        return new RegExp(`^(?<indentation>\\s*)(?<commentPrefix>${regexStr}) ?(?<content>.*)$`);
     }
 
     /**
@@ -180,12 +178,7 @@ abstract class CommentFinderPattern {
             throw new InvalidCommentError();
         }
 
-        const selection = new vscode.Selection(
-            startLine.lineNumber,
-            0,
-            endLine.lineNumber,
-            endLine.text.length
-        );
+        const selection = new vscode.Selection(startLine.lineNumber, 0, endLine.lineNumber, endLine.text.length);
 
         return new Comment(
             selection,
@@ -226,14 +219,13 @@ class LineCommentPattern extends CommentFinderPattern {
     }
 
     protected override getLines(selection: vscode.Selection): string[] {
-        return this.getRawLines(selection).map(line => {
+        return this.getRawLines(selection).map((line) => {
             return this.getContent(line, this.regex);
         });
     }
 }
 
 class NoCommentPattern extends CommentFinderPattern {
-
     protected override getType(): CommentType {
         return CommentType.NO_COMMENT;
     }
@@ -246,7 +238,7 @@ class NoCommentPattern extends CommentFinderPattern {
     protected override getLines(selection: vscode.Selection): string[] {
         const firstLineIndent = this.getLineAt(selection.start.line).firstNonWhitespaceCharacterIndex;
         const firstLineIndentRegex = new RegExp(`^ {${firstLineIndent}}`);
-        return this.getRawLines(selection).map(line => {
+        return this.getRawLines(selection).map((line) => {
             return line.replace(firstLineIndentRegex, '');
         });
     }
@@ -348,16 +340,20 @@ class BlockCommentPattern extends CommentFinderPattern {
 
     protected override getLines(selection: vscode.Selection): string[] {
         const rawLines = this.getRawLines(selection);
-        return collect(rawLines, (line, idx) => {
-            switch (idx) {
-                case 0:
-                    return this.getContent(line, this.commentTopRegex) || undefined;
-                case rawLines.length - 1:
-                    return this.getContent(line, this.commentBottomRegex) || undefined;
-                default:
-                    return this.getContent(line, this.commentMiddleRegex);
-            }
-        }, true);
+        return collect(
+            rawLines,
+            (line, idx) => {
+                switch (idx) {
+                    case 0:
+                        return this.getContent(line, this.commentTopRegex) || undefined;
+                    case rawLines.length - 1:
+                        return this.getContent(line, this.commentBottomRegex) || undefined;
+                    default:
+                        return this.getContent(line, this.commentMiddleRegex);
+                }
+            },
+            true
+        );
     }
 }
 

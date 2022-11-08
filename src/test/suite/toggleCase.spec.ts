@@ -6,22 +6,26 @@ import vscode from 'vscode';
 import { EXTENSION_NAME } from '../../commands';
 import { toggleCase } from '../../commands/toggleCase';
 import { CASE_EXTRA_WORD_CHARS, getConfig } from '../../configuration';
-import { openEditorWithContent, openEditorWithContentAndSelectAll, openEditorWithContentAndSetCursor } from '../utils/test-utils';
-
-
+import {
+    openEditorWithContent,
+    openEditorWithContentAndSelectAll,
+    openEditorWithContentAndSetCursor,
+} from '../utils/test-utils';
 
 describe('toggleCase cycles the case of a selection or word', () => {
-
     afterEach(async () => {
         await vscode.commands.executeCommand('workbench.action.closeAllEditors');
     });
 
     describe('of a selection', () => {
         it('basic usage', async () => {
-            const editor = await openEditorWithContentAndSelectAll('javascript', dedent`
+            const editor = await openEditorWithContentAndSelectAll(
+                'javascript',
+                dedent`
                 Here is a story all about how
                 My life got flipped turned upside-down.
-            `);
+            `
+            );
             await toggleCase(editor);
             expect(editor.document.getText()).to.equal(dedent`
                 HERE IS A STORY ALL ABOUT HOW
@@ -48,26 +52,23 @@ describe('toggleCase cycles the case of a selection or word', () => {
                 `const a = "Abc`.length
             );
             await toggleCase(editor);
-            expect(editor.document.getText()).to.equal(
-                `const a = "ABC_123 other text";`
-            );
+            expect(editor.document.getText()).to.equal(`const a = "ABC_123 other text";`);
             await toggleCase(editor);
-            expect(editor.document.getText()).to.equal(
-                `const a = "abc_123 other text";`
-            );
+            expect(editor.document.getText()).to.equal(`const a = "abc_123 other text";`);
             await toggleCase(editor);
-            expect(editor.document.getText()).to.equal(
-                `const a = "ABC_123 other text";`
-            );
+            expect(editor.document.getText()).to.equal(`const a = "ABC_123 other text";`);
         });
 
         it('multiple cursors - all selections use casing of first selection', async () => {
-            const editor = await openEditorWithContent('javascript', dedent`
+            const editor = await openEditorWithContent(
+                'javascript',
+                dedent`
                 select * from CASE
                 SELECT * from CASE
                 Select * from CASE
                 sELECt * from CASE
-            `);
+            `
+            );
             for (const _iter of _.times(3)) {
                 await vscode.commands.executeCommand('editor.action.insertCursorBelow');
             }
@@ -106,7 +107,9 @@ describe('toggleCase cycles the case of a selection or word', () => {
             });
 
             after(async () => {
-                await vscode.workspace.getConfiguration(EXTENSION_NAME).update(CASE_EXTRA_WORD_CHARS, origCaseExtraWordChars);
+                await vscode.workspace
+                    .getConfiguration(EXTENSION_NAME)
+                    .update(CASE_EXTRA_WORD_CHARS, origCaseExtraWordChars);
             });
 
             it('configured special characters are not word breaks, others are', async () => {
@@ -115,7 +118,9 @@ describe('toggleCase cycles the case of a selection or word', () => {
                     `const a = "https://www.spring-chicken.com?qty=1000&color=white";`,
                     `const a = "http`.length
                 );
-                await vscode.workspace.getConfiguration(EXTENSION_NAME).update(CASE_EXTRA_WORD_CHARS, [':', '/', '.', '-']);
+                await vscode.workspace
+                    .getConfiguration(EXTENSION_NAME)
+                    .update(CASE_EXTRA_WORD_CHARS, [':', '/', '.', '-']);
                 await toggleCase(editor);
                 expect(editor.document.getText()).to.equal(
                     `const a = "HTTPS://WWW.SPRING-CHICKEN.COM?qty=1000&color=white";`
@@ -133,7 +138,9 @@ describe('toggleCase cycles the case of a selection or word', () => {
                     'const msg = "this '.length
                 );
                 await vscode.workspace.getConfiguration(EXTENSION_NAME).update(CASE_EXTRA_WORD_CHARS, ['__', '^']);
-                await expect(toggleCase(editor)).to.be.rejectedWith(`All configured extra word characters must have length 1! The following is invalid: '__'`);
+                await expect(toggleCase(editor)).to.be.rejectedWith(
+                    `All configured extra word characters must have length 1! The following is invalid: '__'`
+                );
             });
         });
     });
