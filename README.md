@@ -65,10 +65,5 @@ Using Github Actions, the CI build will run on all pull requests and pushes/merg
 
 This project uses [Conventional Commits](https://www.conventionalcommits.org/) and [standard-version](https://github.com/conventional-changelog/standard-version) to facilitate versioning and changelogs.
 
-## Future Work
-- Support default quote characters by language
-- Support quotes that use a different opening/closing characters
-
-## Known Issues
-
-None
+## Future Work?
+Please open an issue if you have a suggestion!
