@@ -25,7 +25,7 @@ jobs:
         if: runner.os == 'Linux'
         uses: nick-fields/retry@v2.8.1
         with:
-          command: xvfb-run -a npm run test-ci
+          command: xvfb-run -a npm run test:ci
           max_attempts: 3
           timeout_minutes: 6
         env:
@@ -35,7 +35,7 @@ jobs:
         if: runner.os != 'Linux'
         uses: nick-fields/retry@v2.8.1
         with:
-          # c8 coverage doesn't work right on windows, so we'll only use `npm run test-ci` for linux
+          # Only run `npm run test:ci` for linux, c8 coverage doesn't work right on windows...
           command: npm test
           max_attempts: 3
           timeout_minutes: 6
