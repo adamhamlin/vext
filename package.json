@@ -188,7 +188,7 @@
         "yaml": "^2.1.1"
     },
     "devDependencies": {
-        "@adamhamlin/eslint-config": "^1.0.0",
+        "@adamhamlin/eslint-config": "^1.1.0",
         "@types/chai": "^4.2.22",
         "@types/chai-as-promised": "^7.1.4",
         "@types/dedent": "^0.7.0",
