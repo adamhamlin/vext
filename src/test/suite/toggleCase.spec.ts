@@ -3,9 +3,10 @@ import dedent from 'dedent';
 import _ from 'lodash';
 import vscode from 'vscode';
 
-import { EXTENSION_NAME } from '../../commands';
 import { toggleCase } from '../../commands/toggleCase';
-import { CASE_EXTRA_WORD_CHARS, getConfig } from '../../configuration';
+import { getConfig } from '../../configuration';
+import { CASE_EXTRA_WORD_CHARS } from '../../configuration/configuration.constants';
+import { EXTENSION_NAME } from '../../constants';
 import {
     openEditorWithContent,
     openEditorWithContentAndSelectAll,

@@ -3,7 +3,8 @@ import _ from 'lodash';
 import vscode from 'vscode';
 import YAML from 'yaml';
 
-import { getConfig, USE_DOUBLE_QUOTES_FOR_OUTPUT_STRINGS } from '../configuration';
+import { getConfig } from '../configuration';
+import { USE_DOUBLE_QUOTES_FOR_OUTPUT_STRINGS } from '../configuration/configuration.constants';
 import { JsonObjectOrArray } from '../types';
 import { collectFirst, handleError, isHighlightedSelection, parseJsonStripComments, rotate, UserError } from '../utils';
 

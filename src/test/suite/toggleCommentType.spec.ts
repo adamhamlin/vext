@@ -4,11 +4,12 @@ import _ from 'lodash';
 import sinon from 'sinon';
 import vscode from 'vscode';
 
-import { EXTENSION_NAME } from '../../commands';
 import * as dependencyCommand from '../../commands/dependencyCommand';
 import { DependencyCommand } from '../../commands/dependencyCommand';
 import { toggleCommentType } from '../../commands/toggleCommentType';
-import { AUTO_FORMAT_ON_COMMENT_TOGGLE, getConfig } from '../../configuration';
+import { getConfig } from '../../configuration';
+import { AUTO_FORMAT_ON_COMMENT_TOGGLE } from '../../configuration/configuration.constants';
+import { EXTENSION_NAME } from '../../constants';
 import { openEditorWithContentAndHighlightSelection, openEditorWithContentAndSelectAll } from '../utils/test-utils';
 
 const testModes = {

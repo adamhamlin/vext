@@ -8,6 +8,7 @@ import {
     clearActivatedExtensionsCache,
 } from '../../commands/dependencyCommand';
 import * as configuration from '../../configuration';
+import { QUOTE_CHARS } from '../../configuration/configuration.constants';
 import * as miscUtils from '../../utils';
 
 /**
@@ -83,7 +84,7 @@ describe('Misc', () => {
     describe('configuration.ts', () => {
         describe('getConfig', () => {
             it('Gets a configuration item', async () => {
-                const quoteChars = configuration.getConfig<string[]>(configuration.QUOTE_CHARS);
+                const quoteChars = configuration.getConfig<string[]>(QUOTE_CHARS);
                 expect(quoteChars).to.deep.equal([`"`, `'`, '`']);
             });
 

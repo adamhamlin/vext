@@ -3,9 +3,10 @@ import dedent from 'dedent';
 import _ from 'lodash';
 import vscode from 'vscode';
 
-import { EXTENSION_NAME } from '../../commands';
 import { toggleVariableNamingFormat } from '../../commands/toggleVariableNamingFormat';
-import { VARIABLE_NAMING_FORMATS, getConfig } from '../../configuration';
+import { getConfig } from '../../configuration';
+import { VARIABLE_NAMING_FORMATS } from '../../configuration/configuration.constants';
+import { EXTENSION_NAME } from '../../constants';
 import {
     openEditorWithContent,
     openEditorWithContentAndSelectAll,
