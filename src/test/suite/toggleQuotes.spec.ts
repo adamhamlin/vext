@@ -3,9 +3,10 @@ import dedent from 'dedent';
 import _ from 'lodash';
 import vscode from 'vscode';
 
-import { EXTENSION_NAME } from '../../commands';
 import { toggleQuotes } from '../../commands/toggleQuotes';
-import { getConfig, QUOTE_CHARS } from '../../configuration';
+import { getConfig } from '../../configuration';
+import { QUOTE_CHARS } from '../../configuration/configuration.constants';
+import { EXTENSION_NAME } from '../../constants';
 import {
     openEditorWithContent,
     openEditorWithContentAndHighlightSelection,

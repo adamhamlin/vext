@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import vscode from 'vscode';
 
-import { VARIABLE_NAMING_FORMATS, getConfig } from '../configuration';
+import { getConfig } from '../configuration';
+import { VARIABLE_NAMING_FORMATS } from '../configuration/configuration.constants';
 import { getCursorWordAsSelection, getNextElement, handleError, UserError } from '../utils';
 
 export const TOGGLE_VARIABLE_NAMING_FORMAT_CMD = 'toggleVariableNamingFormat';

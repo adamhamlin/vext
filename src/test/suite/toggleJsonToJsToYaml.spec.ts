@@ -3,9 +3,10 @@ import dedent from 'dedent';
 import _ from 'lodash';
 import vscode from 'vscode';
 
-import { EXTENSION_NAME } from '../../commands';
 import { toggleJsonToJsToYaml } from '../../commands/toggleJsonToJsToYaml';
-import { getConfig, USE_DOUBLE_QUOTES_FOR_OUTPUT_STRINGS } from '../../configuration';
+import { getConfig } from '../../configuration';
+import { USE_DOUBLE_QUOTES_FOR_OUTPUT_STRINGS } from '../../configuration/configuration.constants';
+import { EXTENSION_NAME } from '../../constants';
 import {
     openEditorWithContent,
     openEditorWithContentAndHighlightSelection,

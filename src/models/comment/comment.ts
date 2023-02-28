@@ -1,8 +1,7 @@
 import _ from 'lodash';
 import vscode from 'vscode';
 
-import { CommentConfig, getCommentConfigForLanguage } from '../../configuration';
-import { CommentFinder } from './commentFinder';
+import { CommentConfig } from '../../configuration';
 
 export enum CommentType {
     BLOCK_COMMENT = 'multiline',
@@ -69,14 +68,5 @@ export class Comment {
 
     private linesToString(linesToOutput: string[]): string {
         return linesToOutput.map((line) => (this.indentation + line).trimEnd()).join('\n');
-    }
-
-    /**
-     * Parse a Comment object from the current editor selection.
-     */
-    static async parseCommentFromSelection(editor: vscode.TextEditor): Promise<Comment> {
-        const commentConfig = await getCommentConfigForLanguage();
-        const commentFinder = new CommentFinder(editor, commentConfig);
-        return commentFinder.findAndSelectComment();
     }
 }

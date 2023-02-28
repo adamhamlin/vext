@@ -3,7 +3,8 @@ import { basename } from 'path';
 import _ from 'lodash';
 import vscode from 'vscode';
 
-import { EXTENSION_NAME } from '../commands';
+import { AUTO_FORMAT_ON_COMMENT_TOGGLE } from './configuration.constants';
+import { EXTENSION_NAME } from '../constants';
 import { getCurrentLang, parseJsonStripComments, UserError } from '../utils';
 
 type IndividualCommentConfig = {
@@ -25,13 +26,6 @@ type LanguageConfiguration = {
         lineComment: string;
     };
 };
-
-// Supported configuration properties
-export const AUTO_FORMAT_ON_COMMENT_TOGGLE = 'autoFormatOnToggleCommentType';
-export const QUOTE_CHARS = 'quoteChars';
-export const CASE_EXTRA_WORD_CHARS = 'caseExtraWordChars';
-export const VARIABLE_NAMING_FORMATS = 'variableNamingFormats';
-export const USE_DOUBLE_QUOTES_FOR_OUTPUT_STRINGS = 'useDoubleQuotesForOutputStrings';
 
 /**
  * Get any configuration setting for the specified key (defaults to Vext configuration).

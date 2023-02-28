@@ -5,11 +5,10 @@ import { toggleCommentType, TOGGLE_COMMENT_TYPE_CMD } from './toggleCommentType'
 import { toggleJsonToJsToYaml, TOGGLE_JSON_TO_JS_TO_YAML } from './toggleJsonToJsToYaml';
 import { toggleQuotes, TOGGLE_QUOTES_CMD } from './toggleQuotes';
 import { toggleVariableNamingFormat, TOGGLE_VARIABLE_NAMING_FORMAT_CMD } from './toggleVariableNamingFormat';
-
-export const EXTENSION_NAME = 'vext';
+import { EXTENSION_NAME } from '../constants';
 
 export function registerAllCommands(context: vscode.ExtensionContext): void {
-    // NOTE: Each of these commands must appear in package.json under `contributes.commands` and `activationEvents`.
+    // NOTE: Each of these commands must appear in package.json under `contributes.commands`.
     [
         vscode.commands.registerTextEditorCommand(`${EXTENSION_NAME}.${TOGGLE_COMMENT_TYPE_CMD}`, toggleCommentType),
         vscode.commands.registerTextEditorCommand(`${EXTENSION_NAME}.${TOGGLE_QUOTES_CMD}`, toggleQuotes),

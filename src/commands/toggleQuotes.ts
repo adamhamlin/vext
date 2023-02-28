@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import vscode from 'vscode';
 
-import { getConfig, QUOTE_CHARS } from '../configuration';
+import { getConfig } from '../configuration';
+import { QUOTE_CHARS } from '../configuration/configuration.constants';
 import { Match } from '../types';
 import {
     getCursorWordAsSelection,

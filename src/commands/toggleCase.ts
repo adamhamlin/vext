@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import vscode from 'vscode';
 
-import { CASE_EXTRA_WORD_CHARS, getConfig } from '../configuration';
+import { getConfig } from '../configuration';
+import { CASE_EXTRA_WORD_CHARS } from '../configuration/configuration.constants';
 import { getCursorWordAsSelection, handleError, isHighlightedSelection } from '../utils';
 
 export const TOGGLE_CASE_CMD = 'toggleCase';

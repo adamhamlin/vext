@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import vscode from 'vscode';
 
-import { CommentConfig } from '../../configuration';
-import { collect, collectFirst, isHighlightedSelection, UserError } from '../../utils';
 import { Comment, CommentType } from './comment';
+import { CommentConfig, getCommentConfigForLanguage } from '../../configuration';
+import { collect, collectFirst, isHighlightedSelection, UserError } from '../../utils';
 
 enum ProbeDirection {
     UP = 'up',
@@ -43,6 +43,15 @@ export class CommentFinder {
             throw new UserError('Could not parse a valid comment encompassing the current line.');
         }
         return comment;
+    }
+
+    /**
+     * Parse a Comment object from the current editor selection.
+     */
+    static async parseCommentFromSelection(editor: vscode.TextEditor): Promise<Comment> {
+        const commentConfig = await getCommentConfigForLanguage();
+        const commentFinder = new CommentFinder(editor, commentConfig);
+        return commentFinder.findAndSelectComment();
     }
 }
 
