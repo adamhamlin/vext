@@ -6,9 +6,17 @@ import YAML from 'yaml';
 import { getConfig } from '../configuration';
 import { USE_DOUBLE_QUOTES_FOR_OUTPUT_STRINGS } from '../configuration/configuration.constants';
 import { JsonObjectOrArray } from '../types';
-import { collectFirst, handleError, isHighlightedSelection, parseJsonStripComments, rotate, UserError } from '../utils';
+import {
+    collectFirst,
+    handleError,
+    isHighlightedSelection,
+    isMultiLineSelection,
+    parseJsonStripComments,
+    rotate,
+    UserError,
+} from '../utils';
 
-export const TOGGLE_JSON_TO_JS_TO_YAML = 'toggleJsonToJsToYaml';
+export const TOGGLE_JSON_TO_JS_TO_YAML_CMD = 'toggleJsonToJsToYaml';
 
 /**
  * Toggle selection between JSON and the javascript equivalent using unquoted keys where possible.
@@ -86,7 +94,7 @@ abstract class SerializationFormatter {
         protected readonly options: SerializationFormatOptions
     ) {
         this.text = editor.document.getText(this.selection);
-        this.isMultiLineSelection = this.selection.start.line !== this.selection.end.line;
+        this.isMultiLineSelection = isMultiLineSelection(this.selection);
         this.firstLine = editor.document.lineAt(this.selection.start.line);
         /* c8 ignore next */
         const editorTabSize = +(vscode.window.activeTextEditor?.options.tabSize || 4);

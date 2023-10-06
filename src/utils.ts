@@ -57,6 +57,13 @@ export function getCurrentLang(): string {
 }
 
 /**
+ * Returns true if the current OS is Windows
+ */
+export function isWindowsOS(): boolean {
+    return process.platform === 'win32';
+}
+
+/**
  * Returns the element after the specified element, or the first element if the last element is specified.
  * This is useful when doing "toggle" operations.
  *
@@ -125,6 +132,13 @@ export function parseJsonStripComments<T extends JsonObjectOrArray>(jsonStr: str
  */
 export function isHighlightedSelection(selection: vscode.Selection): boolean {
     return selection.start.character !== selection.end.character || selection.start.line !== selection.end.line;
+}
+
+/**
+ * Returns true if the given selection spans multiple lines
+ */
+export function isMultiLineSelection(selection: vscode.Selection): boolean {
+    return selection.start.line !== selection.end.line;
 }
 
 /**
