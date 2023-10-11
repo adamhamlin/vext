@@ -60,7 +60,8 @@ export function getCurrentLang(): string {
  * Returns true if the current OS is Windows
  */
 export function isWindowsOS(): boolean {
-    return process.platform === 'win32';
+    return false;
+    // return process.platform === 'win32';
 }
 
 /**
