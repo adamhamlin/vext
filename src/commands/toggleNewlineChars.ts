@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { match } from 'ts-pattern';
 import vscode from 'vscode';
 
-import { UserError, handleError, isHighlightedSelection, isMultiLineSelection, isWindowsOS } from '../utils';
+import { UserError, handleError, isHighlightedSelection, isMultiLineSelection } from '../utils';
 
 export const TOGGLE_NEWLINE_CHARS_CMD = 'toggleNewlineChars';
 
@@ -26,9 +26,7 @@ export async function toggleNewlineChars(editor: vscode.TextEditor): Promise<voi
 
         const currentText = editor.document.getText(selection);
         const isMultiLine = isMultiLineSelection(selection);
-        const [crlf, literalCrlf, literalCrlfRegexStr] = isWindowsOS()
-            ? ['\r\n', '\\r\\n', '\\\\r\\\\n']
-            : ['\n', '\\n', '\\\\n'];
+        const [crlf, literalCrlf, literalCrlfRegexStr] = ['\n', '\\n', '\\\\n'];
 
         const replacementText = match(isMultiLine)
             .with(true, () => currentText.replace(new RegExp(crlf, 'g'), literalCrlf)) // convert to single-line

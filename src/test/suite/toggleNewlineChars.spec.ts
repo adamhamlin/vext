@@ -4,7 +4,6 @@ import _ from 'lodash';
 import vscode from 'vscode';
 
 import { toggleNewlineChars } from '../../commands/toggleNewlineChars';
-import { isWindowsOS } from '../../utils';
 import { openEditorWithContent, openEditorWithContentAndSelectAll } from '../utils/test-utils';
 
 describe('toggleNewlineChars cycles between newlines and literal newline characters', () => {
@@ -23,9 +22,7 @@ describe('toggleNewlineChars cycles between newlines and literal newline charact
         );
         await toggleNewlineChars(editor);
         expect(editor.document.getText()).to.equal(
-            isWindowsOS()
-                ? 'Code under testing\\r\\nValidation brings comfort\\r\\nErrors, now exposed'
-                : 'Code under testing\\nValidation brings comfort\\nErrors, now exposed'
+            'Code under testing\\nValidation brings comfort\\nErrors, now exposed'
         );
         await toggleNewlineChars(editor);
         expect(editor.document.getText()).to.equal(dedent`

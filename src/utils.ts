@@ -57,14 +57,6 @@ export function getCurrentLang(): string {
 }
 
 /**
- * Returns true if the current OS is Windows
- */
-export function isWindowsOS(): boolean {
-    return false;
-    // return process.platform === 'win32';
-}
-
-/**
  * Returns the element after the specified element, or the first element if the last element is specified.
  * This is useful when doing "toggle" operations.
  *
