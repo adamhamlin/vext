@@ -36,6 +36,13 @@ Simple VS Code Extension to toggle text features! With `vext` commands you can..
       - the first line (of a multi-line selection) is preceded by non-whitespace characters
 ***
 
+- `Toggle Newlines To Literal Newline Characters`: Toggle newlines to literal `\n` and back.
+
+  ![Newlines Demo](resources/demos/newlines.gif)
+  - Keybinding: <kbd>Cmd</kbd>+<kbd>Opt</kbd>+<kbd>n</kbd> (_Mac_), <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>n</kbd> (_Other_)
+  - Settings: N/A
+***
+
 - `Toggle Variable Naming Format`: Toggle a variable/identifier format between camel, snake, pascal, kebab, etc.
 
   ![Variable Format Demo](resources/demos/variable-format.gif)
