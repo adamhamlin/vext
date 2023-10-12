@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.7.0](https://github.com/adamhamlin/vext/compare/v0.6.2...v0.7.0) (2023-10-12)
+
+
+### Features
+
+* Add `toggleNewlineChars` command ([#40](https://github.com/adamhamlin/vext/issues/40)) ([89cd1c5](https://github.com/adamhamlin/vext/commit/89cd1c5b9d44693711d933bcf4922c024be6923a))
+
 ### [0.6.2](https://github.com/adamhamlin/vext/compare/v0.6.1...v0.6.2) (2023-02-28)
 
 ### [0.6.1](https://github.com/adamhamlin/vext/compare/v0.6.0...v0.6.1) (2023-02-28)
