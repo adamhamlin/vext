@@ -128,6 +128,13 @@ export function isHighlightedSelection(selection: vscode.Selection): boolean {
 }
 
 /**
+ * Returns true if the given selection spans multiple lines
+ */
+export function isMultiLineSelection(selection: vscode.Selection): boolean {
+    return selection.start.line !== selection.end.line;
+}
+
+/**
  * Removes any active editor highlighting and leaves cursor in the current position.
  */
 export function removeHighlighting(editor: vscode.TextEditor): void {
