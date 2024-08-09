@@ -1,5 +1,5 @@
 import { parse } from 'comment-json';
-import _ = require('lodash');
+import _ from 'lodash';
 import vscode from 'vscode';
 
 import { JsonObjectOrArray, Match } from './types';
@@ -49,11 +49,44 @@ export async function replaceEditorSelection(
     return success;
 }
 
+type TrimOptions = {
+    trimWhitespace: boolean;
+    startChars?: string;
+    endChars?: string;
+};
+
+/**
+ * Trims the specified string
+ * @param text the text to trim
+ * @param options the trim options
+ * @returns the trimmed string
+ */
+export function trimText(text: string, options: TrimOptions): string {
+    let trimmedText = text;
+    if (options.trimWhitespace) {
+        trimmedText = trimmedText.trim();
+    }
+    if (options.startChars) {
+        trimmedText = _.trimStart(trimmedText, options.startChars);
+    }
+    if (options.endChars) {
+        trimmedText = _.trimEnd(trimmedText, options.endChars);
+    }
+    return trimmedText;
+}
+
 /**
  * Get the editor's current language.
  */
 export function getCurrentLang(): string {
     return vscode.window.activeTextEditor?.document.languageId || 'plaintext';
+}
+
+/**
+ * Get the editor's current tab size.
+ */
+export function getCurrentTabSize(): number {
+    return +(vscode.window.activeTextEditor?.options.tabSize || 4);
 }
 
 /**
@@ -139,6 +172,59 @@ export function isMultiLineSelection(selection: vscode.Selection): boolean {
  */
 export function removeHighlighting(editor: vscode.TextEditor): void {
     editor.selections = editor.selections.map((s) => new vscode.Selection(s.active, s.active));
+}
+
+/**
+ * Shrinks the editor selection by ignoring the specified leading/trailing characters in `options`
+ * @param editor the vscode editor
+ * @param options the trim options for ignoring leading/trailing characters
+ * @returns true if the editor selection was modified, otherwise false
+ */
+export async function shrinkEditorSelections(editor: vscode.TextEditor, options: TrimOptions): Promise<void> {
+    editor.selections = editor.selections.map((selection) => {
+        const origText = editor.document.getText(selection);
+        const trimmedText = trimText(origText, options);
+
+        // Short-circuit if trimming didn't do anything
+        if (origText.length === trimmedText.length) {
+            return selection;
+        }
+
+        const origTextLines = origText.split('\n');
+        const trimmedTextLines = trimmedText.split('\n');
+        const firstTrimmedTextLine = trimmedTextLines[0];
+        const lastTrimmedTextLine = trimmedTextLines[trimmedTextLines.length - 1];
+
+        // Determine line offsets from the original start line
+        const [newStartLineOffset, newEndLineOffset] = [
+            collectFirst(origTextLines, (line, idx) => {
+                if (line.includes(firstTrimmedTextLine)) {
+                    return idx;
+                }
+            }),
+            collectFirst(origTextLines.slice().reverse(), (line, idx) => {
+                if (line.includes(lastTrimmedTextLine)) {
+                    return origTextLines.length - 1 - idx;
+                }
+            }),
+        ];
+
+        if (newStartLineOffset === undefined || newEndLineOffset === undefined) {
+            // Shouldn't happen, but making the types happy
+            throw new Error('Could not determine line offset(s)');
+        }
+
+        const newStartLineNum = selection.start.line + newStartLineOffset;
+        const newEndLineNum = selection.start.line + newEndLineOffset;
+        const newStartChar = editor.document.lineAt(newStartLineNum).text.indexOf(firstTrimmedTextLine);
+        const newEndChar =
+            editor.document.lineAt(newEndLineNum).text.lastIndexOf(lastTrimmedTextLine) + lastTrimmedTextLine.length;
+
+        return new vscode.Selection(
+            new vscode.Position(newStartLineNum, newStartChar),
+            new vscode.Position(newEndLineNum, newEndChar)
+        );
+    });
 }
 
 /**
