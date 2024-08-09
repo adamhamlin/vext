@@ -8,11 +8,13 @@ import { USE_DOUBLE_QUOTES_FOR_OUTPUT_STRINGS } from '../configuration/configura
 import { JsonObjectOrArray } from '../types';
 import {
     collectFirst,
+    getCurrentTabSize,
     handleError,
     isHighlightedSelection,
     isMultiLineSelection,
     parseJsonStripComments,
     rotate,
+    shrinkEditorSelections,
     UserError,
 } from '../utils';
 
@@ -33,6 +35,8 @@ export async function toggleJsonToJsToYaml(editor: vscode.TextEditor): Promise<v
         if (editor.selections.length !== 1) {
             throw usageError;
         }
+
+        await shrinkEditorSelections(editor, { trimWhitespace: true, endChars: ';,' });
 
         const selection = editor.selections[0];
         if (!isHighlightedSelection(selection)) {
@@ -64,8 +68,6 @@ export async function toggleJsonToJsToYaml(editor: vscode.TextEditor): Promise<v
             }
         });
 
-        // TODO: preserve indentation?
-
         if (!replacementText) {
             throw usageError;
         }
@@ -96,9 +98,7 @@ abstract class SerializationFormatter {
         this.text = editor.document.getText(this.selection);
         this.isMultiLineSelection = isMultiLineSelection(this.selection);
         this.firstLine = editor.document.lineAt(this.selection.start.line);
-        /* c8 ignore next */
-        const editorTabSize = +(vscode.window.activeTextEditor?.options.tabSize || 4);
-        this.tabSize = this.isMultiLineSelection ? editorTabSize : undefined;
+        this.tabSize = this.isMultiLineSelection ? getCurrentTabSize() : undefined;
         this.looksLikeJsonObjectOrArray = [
             ['{', '}'],
             ['[', ']'],
@@ -160,26 +160,36 @@ class JavascriptFormatter extends SerializationFormatter {
 }
 
 class YamlFormatter extends SerializationFormatter {
+    protected override tabSize = getCurrentTabSize(); // always need a tab size for YAML
     override mayParse(): boolean {
-        return this.isMultiLineSelection;
+        return !this.looksLikeJsonObjectOrArray;
     }
     override parse(): JsonObjectOrArray {
         const str = this.removeIndent(this.text);
-        return YAML.parse(str);
+        const res = YAML.parse(str);
+        if (typeof res !== 'object') {
+            throw new Error('YAML parser returned a non-object');
+        }
+        return res;
     }
     override mayStringify(_input: JsonObjectOrArray): boolean {
-        return (
-            this.isMultiLineSelection &&
-            this.firstLine.firstNonWhitespaceCharacterIndex === this.selection.start.character
-        );
+        return this.firstLine.firstNonWhitespaceCharacterIndex === this.selection.start.character;
     }
     override doStringify(input: JsonObjectOrArray): string {
         const str = YAML.stringify(input, {
             indent: this.tabSize,
             singleQuote: !this.options.useDoubleQuotesForOutputStrings,
         });
+
         // Remove trailing newline
-        return str.trimEnd();
+        const res = str.trimEnd();
+
+        // Bail if single line selection would be multiline with YAML
+        if (!this.isMultiLineSelection && res.includes('\n')) {
+            throw new Error('Cannot output multiple lines of YAML if original selection was single line');
+        }
+
+        return res;
     }
     override computeIndentation(): number {
         return this.selection.start.character;

@@ -15,6 +15,7 @@ export async function toggleNewlineChars(editor: vscode.TextEditor): Promise<voi
     await handleError(async () => {
         const usageError = new UserError('Must select a section of text!');
 
+        /* c8 ignore next 3 */
         if (editor.selections.length !== 1) {
             throw usageError;
         }

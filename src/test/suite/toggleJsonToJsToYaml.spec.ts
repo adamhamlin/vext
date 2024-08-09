@@ -248,6 +248,47 @@ describe('toggleJsonToJsToYaml cycles between strict JSON, Javascript, and YAML 
         `);
     });
 
+    it('Leading/trailing whitespace and some trailing characters are excluded from selection', async () => {
+        const editor = await openEditorWithContentAndHighlightSelection(
+            'typescript',
+            dedent`
+                const myArr = [
+                    {
+                        "a": "A"
+                    },
+                    { "other": "stuff" }
+                ];
+            `,
+            0,
+            0,
+            1,
+            4
+        );
+        await toggleJsonToJsToYaml(editor);
+        expect(editor.document.getText()).to.equal(dedent`
+            const myArr = [
+                {
+                    a: 'A'
+                },
+                { "other": "stuff" }
+            ];
+        `);
+        await toggleJsonToJsToYaml(editor);
+        expect(editor.document.getText()).to.equal(dedent`
+            const myArr = [
+                a: A,
+                { "other": "stuff" }
+            ];
+        `);
+        await toggleJsonToJsToYaml(editor);
+        expect(editor.document.getText()).to.equal(dedent`
+            const myArr = [
+                {"a":"A"},
+                { "other": "stuff" }
+            ];
+        `);
+    });
+
     it('YAML not a valid output when first line of selection is preceded by non-whitespace characters', async () => {
         const editor = await openEditorWithContentAndHighlightSelection(
             'typescript',
@@ -297,8 +338,7 @@ describe('toggleJsonToJsToYaml cycles between strict JSON, Javascript, and YAML 
         `);
     });
 
-    it('single-line input yields single-line output', async () => {
-        // NOTE: YAML will not trigger for single-line
+    it('single-line input (multiple keys) yields single-line output -- YAML is skipped', async () => {
         const editor = await openEditorWithContentAndSelectAll(
             'javascript',
             dedent`
@@ -312,6 +352,27 @@ describe('toggleJsonToJsToYaml cycles between strict JSON, Javascript, and YAML 
         await toggleJsonToJsToYaml(editor);
         expect(editor.document.getText(editor.selection)).to.equal(dedent`
             {"first":1,"second":[2,"two"]}
+        `);
+    });
+
+    it('single-line input (single key) yields single-line output -- YAML is not skipped', async () => {
+        const editor = await openEditorWithContentAndSelectAll(
+            'javascript',
+            dedent`
+            {"first":1}
+        `
+        );
+        await toggleJsonToJsToYaml(editor);
+        expect(editor.document.getText(editor.selection)).to.equal(dedent`
+            { first: 1 }
+        `);
+        await toggleJsonToJsToYaml(editor);
+        expect(editor.document.getText(editor.selection)).to.equal(dedent`
+            first: 1
+        `);
+        await toggleJsonToJsToYaml(editor);
+        expect(editor.document.getText(editor.selection)).to.equal(dedent`
+            {"first":1}
         `);
     });
 

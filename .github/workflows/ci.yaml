@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout/install
-        uses: adamhamlin/checkout-node-project@v0.1.0
+        uses: adamhamlin/checkout-node-project@v1
         with:
           node-version: 16.x
 
