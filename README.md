@@ -32,7 +32,7 @@ Simple VS Code Extension to toggle text features! With `vext` commands you can..
     - `vext.useDoubleQuotesForOutputStrings`: When enabled, Javascript or YAML results will use double quotes (instead of single quotes) for string values and keys as required.
   - Notes:
     - YAML will NOT be output when:
-      - it's a single-line selection
+      - it's a single-line selection and the resulting YAML would not be a single line
       - the first line (of a multi-line selection) is preceded by non-whitespace characters
 ***
 
