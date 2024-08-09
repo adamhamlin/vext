@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/adamhamlin/vext/compare/v0.7.0...v1.0.0) (2024-08-09)
+
+
+### Features
+
+* **toggleJsonToJsToYaml:** Make initial selections more forgiving ([#42](https://github.com/adamhamlin/vext/issues/42)) ([09c8d99](https://github.com/adamhamlin/vext/commit/09c8d997d3ea6c674566a84760ad1fe7f1ad06c8))
+
 ## [0.7.0](https://github.com/adamhamlin/vext/compare/v0.6.2...v0.7.0) (2023-10-12)
 
 
