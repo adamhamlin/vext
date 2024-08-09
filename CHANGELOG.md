@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1](https://github.com/adamhamlin/vext/compare/v1.0.0...v1.0.1) (2024-08-09)
+
+
+### Bug Fixes
+
+* make @types/vscode match engines.vscode to fix publish ([#43](https://github.com/adamhamlin/vext/issues/43)) ([14b95f2](https://github.com/adamhamlin/vext/commit/14b95f2120a4c1bb621e9b400dee25108b140e7c))
+
 ## [1.0.0](https://github.com/adamhamlin/vext/compare/v0.7.0...v1.0.0) (2024-08-09)
 
 
