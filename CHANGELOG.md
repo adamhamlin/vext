@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/adamhamlin/vext/compare/v1.0.1...v1.1.0) (2025-07-20)
+
+
+### Features
+
+* add `toggleUrlEncoding` and `toggleBase64Encoding` commands ([#44](https://github.com/adamhamlin/vext/issues/44)) ([305c781](https://github.com/adamhamlin/vext/commit/305c781c27ae555ca83fd557c675056cd6e1ac67))
+
 ### [1.0.1](https://github.com/adamhamlin/vext/compare/v1.0.0...v1.0.1) (2024-08-09)
 
 
