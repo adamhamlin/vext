@@ -1,8 +1,12 @@
 .vscode/**
 .gitignore
+.github/**
 .eslintrc.js
+.eslintcache/**
+.husky/**
 **/*.ts
 **/*.map
 **/tsconfig.json
 resources/demos/**
 scratch/**
+coverage/**
