@@ -57,6 +57,20 @@ Simple VS Code Extension to toggle text features! With `vext` commands you can..
   - Keybinding: <kbd>Cmd</kbd>+<kbd>Opt</kbd>+<kbd>a</kbd> (_Mac_), <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>a</kbd> (_Other_)
   - Settings:
     - `vext.caseExtraWordChars`: Additional characters that will be considered a part of `\w` when parsing words to toggle case. For example, if '-' is specified, then 'super-secret' would be considered a single word. Defaults to _most_ special characters.
+***
+
+- `Toggle URL Encoding`: Toggle a word or selection to URL-encoded and back
+
+  ![URL Encoding Demo](resources/demos/url-encode.gif)
+  - Keybinding: <kbd>Cmd</kbd>+<kbd>Opt</kbd>+<kbd>u</kbd> (_Mac_), <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>u</kbd> (_Other_)
+  - Settings: N/A
+***
+
+- `Toggle Base64 Encoding`: Toggle a word or selection to base64-encoded and back
+
+  ![Base64 Encoding Demo](resources/demos/base64-encode.gif)
+  - Keybinding: <kbd>Cmd</kbd>+<kbd>Opt</kbd>+<kbd>6</kbd> (_Mac_), <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>6</kbd> (_Other_)
+  - Settings: N/A
 
 ## Keybindings
 

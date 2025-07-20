@@ -1,8 +1,9 @@
 import { parse } from 'comment-json';
 import _ from 'lodash';
+import { match } from 'ts-pattern';
 import vscode from 'vscode';
 
-import { JsonObjectOrArray, Match } from './types';
+import { CursorWordOptions, JsonObjectOrArray, Match } from './types';
 
 // Some error types used to drive user messages (see handleError below)
 export class UserError extends Error {}
@@ -112,9 +113,9 @@ export function getNextElement<T>(arr: T[], currentValue: T): T {
 export function getCursorWordAsSelection(
     editor: vscode.TextEditor,
     selection: vscode.Selection,
-    extraWordChars: string[] = []
+    cursorWordOptions: CursorWordOptions = {}
 ): vscode.Selection {
-    const regex = getWordsRegex(extraWordChars, false);
+    const regex = getWordsRegex(cursorWordOptions);
     const lineText = editor.document.lineAt(selection.start.line).text;
     const matches: Match[] = [];
 
@@ -143,7 +144,7 @@ export function getCursorWordAsSelection(
  * @returns true if text is a single word
  */
 export function isWord(text: string, extraWordChars: string[]): boolean {
-    return getWordsRegex(extraWordChars, true).test(text);
+    return getWordsRegex({ extraWordChars, matchFullLine: true }).test(text);
 }
 
 /**
@@ -230,24 +231,29 @@ export async function shrinkEditorSelections(editor: vscode.TextEditor, options:
 /**
  * Helper to get a regex for words, including the provided extra characters
  */
-function getWordsRegex(extraWordChars: string[], matchFullLine: boolean): RegExp {
-    // We're using a regex "character class" (i.e., brackets), so we only need to escape '^', '-', ']', and '\'
-    const escapedExtraWordChars = extraWordChars.map((char) => {
-        if (char.length !== 1) {
-            throw new UserError(
-                `All configured extra word characters must have length 1! The following is invalid: '${char}'`
-            );
-        } else if (/[\^\-\]\\]/.test(char)) {
-            return '\\' + char;
-        } else {
-            return char;
-        }
-    });
-    let regexStr = `[\\w${escapedExtraWordChars.join('')}]+`;
-    if (matchFullLine) {
-        regexStr = `^${regexStr}$`;
-    }
-    return new RegExp(regexStr, 'g');
+function getWordsRegex(cursorWordOptions: CursorWordOptions): RegExp {
+    return match(cursorWordOptions)
+        .with({ useWhitespaceDelimiter: true }, () => /\S+/g)
+        .otherwise((matched) => {
+            // Default to traditional "word" characters, with some customization options
+            const escapedExtraWordChars = (matched.extraWordChars ?? []).map((char) => {
+                if (char.length !== 1) {
+                    throw new UserError(
+                        `All configured extra word characters must have length 1! The following is invalid: '${char}'`
+                    );
+                } else if (/[\^\-\]\\]/.test(char)) {
+                    return '\\' + char;
+                } else {
+                    return char;
+                }
+            });
+            // We're using a regex "character class" (i.e., brackets), so we only need to escape '^', '-', ']', and '\'
+            let regexStr = `[\\w${escapedExtraWordChars.join('')}]+`;
+            if (matched.matchFullLine) {
+                regexStr = `^${regexStr}$`;
+            }
+            return new RegExp(regexStr, 'g');
+        });
 }
 
 type CollectTxFunction<T, R> = (el: T, idx: number) => R | undefined;

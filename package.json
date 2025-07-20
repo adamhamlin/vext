@@ -79,6 +79,14 @@
                 "title": "Toggle Text Casing"
             },
             {
+                "command": "vext.toggleUrlEncoding",
+                "title": "Toggle URL Encoding"
+            },
+            {
+                "command": "vext.toggleBase64Encoding",
+                "title": "Toggle Base64 Encoding"
+            },
+            {
                 "command": "vext.toggleVariableNamingFormat",
                 "title": "Toggle Variable Naming Format"
             },
@@ -106,6 +114,16 @@
                 "command": "vext.toggleCase",
                 "key": "ctrl+alt+a",
                 "mac": "cmd+alt+a"
+            },
+            {
+                "command": "vext.toggleUrlEncoding",
+                "key": "ctrl+alt+u",
+                "mac": "cmd+alt+u"
+            },
+            {
+                "command": "vext.toggleBase64Encoding",
+                "key": "ctrl+alt+6",
+                "mac": "cmd+alt+6"
             },
             {
                 "command": "vext.toggleVariableNamingFormat",
