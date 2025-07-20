@@ -60,7 +60,7 @@ export async function toggleVariableNamingFormat(editor: vscode.TextEditor): Pro
             }
 
             // Toggle the current word the cursor is in
-            const cursorSelection = getCursorWordAsSelection(editor, selection, ['-']);
+            const cursorSelection = getCursorWordAsSelection(editor, selection, { extraWordChars: ['-'] });
             selectionsToToggle.push(cursorSelection);
         }
 

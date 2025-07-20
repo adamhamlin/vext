@@ -96,7 +96,7 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
                 // let's add quotes to this unquoted word.
                 if (!quoteMatch) {
                     try {
-                        const cursorWordSelection = getCursorWordAsSelection(editor, selection, extraWordChars);
+                        const cursorWordSelection = getCursorWordAsSelection(editor, selection, { extraWordChars });
                         quoteMatch = {
                             startLine: lineNumber,
                             endLine: lineNumber,
