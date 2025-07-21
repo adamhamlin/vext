@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import dedent from 'dedent';
-import _ from 'lodash';
+import _ from 'radashi';
 import vscode from 'vscode';
 
 import { toggleVariableNamingFormat } from '../../commands/toggleVariableNamingFormat';
@@ -70,7 +70,7 @@ describe('toggleVariableNamingFormat cycles the naming format of a word', () => 
             exotic_butters
         `
         );
-        for (const _iter of _.times(5)) {
+        for (const _iter of _.list(5)) {
             await vscode.commands.executeCommand('editor.action.insertCursorBelow');
         }
         // All lines should be toggled to the same new quote character

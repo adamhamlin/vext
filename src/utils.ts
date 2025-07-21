@@ -1,5 +1,5 @@
 import { parse } from 'comment-json';
-import _ from 'lodash';
+import escapeStringRegexp from 'escape-string-regexp';
 import { match } from 'ts-pattern';
 import vscode from 'vscode';
 
@@ -68,10 +68,10 @@ export function trimText(text: string, options: TrimOptions): string {
         trimmedText = trimmedText.trim();
     }
     if (options.startChars) {
-        trimmedText = _.trimStart(trimmedText, options.startChars);
+        trimmedText = trimmedText.replace(new RegExp(`^[${escapeStringRegexp(options.startChars)}]+`, 'g'), '');
     }
     if (options.endChars) {
-        trimmedText = _.trimEnd(trimmedText, options.endChars);
+        trimmedText = trimmedText.replace(new RegExp(`[${escapeStringRegexp(options.endChars)}]+$`, 'g'), '');
     }
     return trimmedText;
 }
@@ -272,7 +272,7 @@ function collectHelper<T, R>(
     haltOnError: boolean
 ): R[] | R | undefined {
     const res: R[] = [];
-    _.forEach(arr, (el, idx) => {
+    for (const [idx, el] of arr.entries()) {
         let transformed: R | undefined;
         try {
             transformed = tx(el, idx);
@@ -284,10 +284,10 @@ function collectHelper<T, R>(
         if (transformed !== undefined) {
             res.push(transformed);
             if (firstOnly) {
-                return false;
+                break;
             }
         }
-    });
+    }
     return firstOnly ? res[0] : res;
 }
 
@@ -305,4 +305,8 @@ export function collectFirst<T, R>(arr: T[], tx: CollectTxFunction<T, R>, haltOn
 export function rotate<T>(arr: T[], n: number): T[] {
     n = n % arr.length;
     return arr.slice(n, arr.length).concat(arr.slice(0, n));
+}
+
+export function isObjectType(val: unknown): val is object {
+    return !!val && typeof val === 'object';
 }

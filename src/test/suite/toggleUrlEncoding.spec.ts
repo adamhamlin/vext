@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import dedent from 'dedent';
-import _ from 'lodash';
+import _ from 'radashi';
 import vscode from 'vscode';
 
 import { toggleUrlEncoding } from '../../commands/toggleUrlEncoding';
@@ -52,7 +52,7 @@ describe('toggleUrlEncoding cycles the URL encoding of a selection or word', () 
                 encode?
             `
             );
-            for (const _iter of _.times(2)) {
+            for (const _iter of _.list(2)) {
                 await vscode.commands.executeCommand('editor.action.insertCursorBelow');
             }
             // All lines should be toggled to the same new quote character

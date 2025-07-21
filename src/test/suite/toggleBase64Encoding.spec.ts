@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import dedent from 'dedent';
-import _ from 'lodash';
+import _ from 'radashi';
 import vscode from 'vscode';
 
 import { toggleBase64Encoding } from '../../commands/toggleBase64Encoding';
@@ -47,7 +47,7 @@ describe('toggleBase64Encoding cycles the base 64 encoding of a selection or wor
                 four?
             `
             );
-            for (const _iter of _.times(2)) {
+            for (const _iter of _.list(2)) {
                 await vscode.commands.executeCommand('editor.action.insertCursorBelow');
             }
             // All lines should be toggled to the same new quote character

@@ -1,11 +1,13 @@
 import { basename } from 'path';
 
-import _ from 'lodash';
+// NOTE: Regexp.escape not available until ES2025
+import escapeStringRegexp from 'escape-string-regexp';
+import _ from 'radashi';
 import vscode from 'vscode';
 
 import { AUTO_FORMAT_ON_COMMENT_TOGGLE } from './configuration.constants';
 import { EXTENSION_NAME } from '../constants';
-import { getCurrentLang, parseJsonStripComments, UserError } from '../utils';
+import { getCurrentLang, isObjectType, parseJsonStripComments, UserError } from '../utils';
 
 type IndividualCommentConfig = {
     line: string;
@@ -35,7 +37,7 @@ export function getConfig<T>(key: string, configurationName = EXTENSION_NAME): T
     if (configValue === undefined) {
         throw new UserError(`No value found for the configuration key ${key}.`);
     }
-    return _.cloneDeep(configValue);
+    return isObjectType(configValue) ? _.cloneDeep(configValue) : configValue;
 }
 
 /**
@@ -66,10 +68,10 @@ export async function getCommentConfigForLanguage(): Promise<CommentConfig> {
             blockEnd: isJavaScriptStyle ? ' */' : blockComment[1],
         },
         regex: {
-            line: _.escapeRegExp(commentConfig.lineComment),
-            blockStart: isJavaScriptStyle ? `${_.escapeRegExp('/**')}?` : _.escapeRegExp(blockComment[0]),
-            blockMiddle: isJavaScriptStyle ? `${_.escapeRegExp('*')}?` : '',
-            blockEnd: isJavaScriptStyle ? _.escapeRegExp('*/') : _.escapeRegExp(blockComment[1]),
+            line: escapeStringRegexp(commentConfig.lineComment),
+            blockStart: isJavaScriptStyle ? `${escapeStringRegexp('/**')}?` : escapeStringRegexp(blockComment[0]),
+            blockMiddle: isJavaScriptStyle ? `${escapeStringRegexp('*')}?` : '',
+            blockEnd: isJavaScriptStyle ? escapeStringRegexp('*/') : escapeStringRegexp(blockComment[1]),
         },
     };
     languageToCommentConfigCache[language] = res;
@@ -97,9 +99,8 @@ export async function getLanguageConfigurationJson(
             throw new Error(`Could not find extension '${languageExtensionName}'`);
         }
         const extensionUri = extension.extensionUri;
-        const configurationFilePath = _.find(
-            extension.packageJSON.contributes.languages,
-            (lang) => lang.id === language
+        const configurationFilePath = extension.packageJSON.contributes.languages.find(
+            (lang: { id: string }) => lang.id === language
         )?.configuration;
         if (!configurationFilePath) {
             throw new Error(`Could not find a configuration file for ${language}`);

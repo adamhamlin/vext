@@ -1,7 +1,7 @@
 import vscode from 'vscode';
 
-import { regexBasedBinaryToggle } from './shared/regexBasedBinaryToggle';
 import { handleError } from '../utils';
+import { regexBasedBinaryToggle } from './shared/regexBasedBinaryToggle';
 
 export const TOGGLE_BASE64_ENCODING_CMD = 'toggleBase64Encoding';
 

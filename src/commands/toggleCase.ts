@@ -1,8 +1,7 @@
-import _ from 'lodash';
 import vscode from 'vscode';
 
-import { regexBasedBinaryToggle } from './shared/regexBasedBinaryToggle';
 import { getConfig } from '../configuration';
+import { regexBasedBinaryToggle } from './shared/regexBasedBinaryToggle';
 import { CASE_EXTRA_WORD_CHARS } from '../configuration/configuration.constants';
 import { handleError } from '../utils';
 
@@ -22,5 +21,5 @@ export async function toggleCase(editor: vscode.TextEditor): Promise<void> {
 }
 
 function transform(originalText: string, hasLowercase: boolean): string {
-    return hasLowercase ? _.toUpper(originalText) : _.toLower(originalText);
+    return hasLowercase ? originalText.toUpperCase() : originalText.toLowerCase();
 }

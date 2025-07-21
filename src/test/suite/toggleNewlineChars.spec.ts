@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import dedent from 'dedent';
-import _ from 'lodash';
 import vscode from 'vscode';
 
 import { toggleNewlineChars } from '../../commands/toggleNewlineChars';

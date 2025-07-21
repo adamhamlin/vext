@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import vscode from 'vscode';
 
 import { CommentConfig } from '../../configuration';
@@ -22,7 +21,7 @@ export class Comment {
         private readonly config: CommentConfig,
         indentationSize: number
     ) {
-        this.indentation = _.repeat(' ', indentationSize);
+        this.indentation = ' '.repeat(indentationSize);
     }
 
     getType(): CommentType {

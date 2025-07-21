@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import vscode from 'vscode';
 
 import { Comment, CommentType } from './comment';

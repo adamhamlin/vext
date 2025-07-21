@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import dedent from 'dedent';
-import _ from 'lodash';
+import _ from 'radashi';
 import vscode from 'vscode';
 
 import { toggleJsonToJsToYaml } from '../../commands/toggleJsonToJsToYaml';
@@ -420,7 +420,7 @@ describe('toggleJsonToJsToYaml cycles between strict JSON, Javascript, and YAML 
             { b: 'B' }
         `
         );
-        for (const _iter of _.times(2)) {
+        for (const _iter of _.list(2)) {
             await vscode.commands.executeCommand('editor.action.insertCursorBelow');
         }
         await expect(toggleJsonToJsToYaml(editor)).to.be.rejectedWith(usageError);

@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import escapeStringRegexp from 'escape-string-regexp';
+import _ from 'radashi';
 import vscode from 'vscode';
 
 import { getConfig } from '../configuration';
@@ -55,7 +56,7 @@ export async function toggleQuotes(editor: vscode.TextEditor): Promise<void> {
         const quoteChars = getConfig<string[]>(QUOTE_CHARS);
         const extraWordChars: string[] = []; // TODO: Make this configurable?
         for (const char of quoteChars) {
-            if (_.escapeRegExp(char).length !== 1) {
+            if (escapeStringRegexp(char).length !== 1) {
                 throw new UserError(
                     'All configured quote characters must be strings of length 1 and cannot be special regex characters!'
                 );
@@ -165,7 +166,7 @@ function getQuotedStrings(
     extraWordChars: string[]
 ): QuoteMatch[] {
     // We need special handling for backticks, if configured
-    const standardQuoteChars = _.without(quoteChars, '`');
+    const standardQuoteChars = _.remove(quoteChars, (char) => char === '`');
     const usingBackticks = standardQuoteChars.length < quoteChars.length;
 
     let regexStr = QUOTE_REGEX_TEMPLATE.replace(QUOTE_CHARS_PLACEHOLDER, standardQuoteChars.join(''));

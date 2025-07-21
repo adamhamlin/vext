@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import dedent from 'dedent';
-import _ from 'lodash';
+import _ from 'radashi';
 import vscode from 'vscode';
 
 import { toggleCase } from '../../commands/toggleCase';
@@ -70,7 +70,7 @@ describe('toggleCase cycles the case of a selection or word', () => {
                 sELECt * from CASE
             `
             );
-            for (const _iter of _.times(3)) {
+            for (const _iter of _.list(3)) {
                 await vscode.commands.executeCommand('editor.action.insertCursorBelow');
             }
             // All lines should be toggled to the same new quote character
