@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import dedent from 'dedent';
-import _ from 'lodash';
+import _ from 'radashi';
 import sinon from 'sinon';
 import vscode from 'vscode';
 
@@ -29,7 +29,7 @@ describe('toggleCommentType', () => {
         sinon.restore();
     });
 
-    _.forEach(testModes, (mode) => {
+    Object.values(testModes).forEach((mode) => {
         describe(`cycles from line comment, to block, to free text, back to line comment -- ${mode}`, () => {
             const errorMsg = 'Could not parse a valid comment encompassing the current line.';
 
@@ -605,11 +605,11 @@ describe('toggleCommentType', () => {
                         // NOTE: Limit is 150, so should be parsed as free text and go straight to line comment
                         const editor = await openEditorWithContentAndSelectAll(
                             'javascript',
-                            ['/**', _.times(151, (num) => ` * Line ${num}`).join('\n'), ' */'].join('\n')
+                            ['/**', _.list(0, 151, (num) => ` * Line ${num}`).join('\n'), ' */'].join('\n')
                         );
                         await toggleCommentTypeAndValidateText(
                             editor,
-                            ['// /**', _.times(151, (num) => `//  * Line ${num}`).join('\n'), '//  */'].join('\n')
+                            ['// /**', _.list(0, 151, (num) => `//  * Line ${num}`).join('\n'), '//  */'].join('\n')
                         );
                     });
                 }

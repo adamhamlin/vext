@@ -1,5 +1,4 @@
 import JSON5 from 'json5';
-import _ from 'lodash';
 import vscode from 'vscode';
 import YAML from 'yaml';
 
@@ -102,7 +101,7 @@ abstract class SerializationFormatter {
         this.looksLikeJsonObjectOrArray = [
             ['{', '}'],
             ['[', ']'],
-        ].some(([open, close]) => _.startsWith(this.text, open) && _.endsWith(this.text, close));
+        ].some(([open, close]) => this.text.startsWith(open) && this.text.endsWith(close));
         this.indent = this.computeIndentation();
     }
 

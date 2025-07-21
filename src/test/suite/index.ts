@@ -1,6 +1,6 @@
 import path from 'path';
 
-import glob from 'glob-promise';
+import { glob } from 'glob';
 import Mocha from 'mocha';
 
 import { mochaHooks } from '../mocha.setup';

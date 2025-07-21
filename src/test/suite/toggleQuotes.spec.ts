@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import dedent from 'dedent';
-import _ from 'lodash';
+import _ from 'radashi';
 import vscode from 'vscode';
 
 import { toggleQuotes } from '../../commands/toggleQuotes';
@@ -110,7 +110,7 @@ describe('toggleQuotes cycles the quote characters used in a string or selection
                 "string 4"
             `
             );
-            for (const _iter of _.times(3)) {
+            for (const _iter of _.list(3)) {
                 await vscode.commands.executeCommand('editor.action.insertCursorBelow');
             }
             // All lines should be toggled to the same new quote character
@@ -148,7 +148,7 @@ describe('toggleQuotes cycles the quote characters used in a string or selection
                 \`string3\`
             `
             );
-            for (const _iter of _.times(4)) {
+            for (const _iter of _.list(4)) {
                 await vscode.commands.executeCommand('editor.action.insertCursorBelow');
             }
             // All lines should be toggled to the same new quote character

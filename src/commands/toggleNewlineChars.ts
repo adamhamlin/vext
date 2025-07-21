@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { match } from 'ts-pattern';
 import vscode from 'vscode';
 

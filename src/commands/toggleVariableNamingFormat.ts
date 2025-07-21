@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'radashi';
 import vscode from 'vscode';
 
 import { getConfig } from '../configuration';
@@ -70,7 +70,10 @@ export async function toggleVariableNamingFormat(editor: vscode.TextEditor): Pro
                 editor.document.getText(selectionsToToggle[0]),
                 namingFormatRegexMap
             );
-            const targetFormat = getNextElement(_.keys(namingFormatRegexMap), currentFormat) as VariableNamingFormat;
+            const targetFormat = getNextElement(
+                Object.keys(namingFormatRegexMap),
+                currentFormat
+            ) as VariableNamingFormat;
 
             await editor.edit((builder) => {
                 for (const selection of selectionsToToggle) {
@@ -94,8 +97,8 @@ export async function toggleVariableNamingFormat(editor: vscode.TextEditor): Pro
  * Get current variable naming format for the given text.
  */
 function getCurrentNamingFormat(originalText: string, formatToRegexMap: NamingFormatRegexMap): VariableNamingFormat {
-    const formatList = _.keys(formatToRegexMap) as VariableNamingFormat[];
-    const currentFormat = _.find(formatList, (format) => {
+    const formatList = Object.keys(formatToRegexMap) as VariableNamingFormat[];
+    const currentFormat = formatList.find((format) => {
         return formatToRegexMap[format].test(originalText);
     });
     if (!currentFormat) {
